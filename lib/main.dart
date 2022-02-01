@@ -56,7 +56,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.cloud_download_rounded),
+            icon: Icon(Icons.bloodtype),
             label: 'Readings',
           ),
           BottomNavigationBarItem(
