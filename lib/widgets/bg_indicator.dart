@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
 import '../model/entry.dart';
@@ -13,7 +14,7 @@ class CircularBgIndicator extends StatelessWidget {
   }) : super(key: key);
 
   Widget putArrow(Entry entry) {
-    const double iconSize = 30;
+    const double iconSize = 50;
     if (entry.direction == "Flat") {
       return const Icon(
         Icons.arrow_forward_outlined,
@@ -61,29 +62,29 @@ class CircularBgIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: ShapeDecoration(
-        color: Theme.of(context).primaryColor,
-        shape: const CircleBorder(),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              // TODO: units
-              (entry.sgv / 18).toStringAsFixed(1),
-              style: Theme.of(context).textTheme.headline3,
-            ),
-            Text(
-              kUnits,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            putArrow(entry),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            // TODO: units
+            (entry.sgv / 18).toStringAsFixed(1),
+            style: Theme.of(context).textTheme.headline1?.copyWith(
+                  fontWeight: FontWeight.normal,
+                ),
+          ),
+          Column(
+            children: [
+              Text(
+                kUnits,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              putArrow(entry),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -76,9 +76,14 @@ class ReadingsScreenController {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: controller,
-              ),
+              child: treatmentType == "insulin"
+                  ? TextField(
+                      controller: controller,
+                      keyboardType: TextInputType.number,
+                    )
+                  : TextField(
+                      controller: controller,
+                    ),
             ),
             Row(
               children: [

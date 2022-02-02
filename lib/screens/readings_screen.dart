@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../widgets/bg_scatter_plot.dart';
-import '../widgets/circular_bg_indicator.dart';
+import '../widgets/bg_indicator.dart';
 import '../widgets/delta_info_panel.dart';
 import '../widgets/time_interval_selection_panel.dart';
 import '../widgets/treatments_panel.dart';
@@ -50,10 +50,8 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: CircularBgIndicator(entry: snapshot.data?[0].first),
-              ),
               DeltaInfoPanel(entries: snapshot.data?[0]),
+              CircularBgIndicator(entry: snapshot.data?[0].first),
               TimeIntervalSelectionPanel(
                 screenController:
                     screenController ?? ReadingsScreenController(),

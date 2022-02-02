@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
+      debugShowCheckedModeBanner: false,
       theme: CustomTheme.darkTheme,
       home: const MyStatefulWidget(),
     );
@@ -47,6 +48,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SattiV'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
