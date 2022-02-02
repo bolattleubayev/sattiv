@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sattiv/screens/readings_screen.dart';
-import 'package:sattiv/screens/settings_screen.dart';
+import '../screens/readings_screen.dart';
+import '../screens/settings_screen.dart';
+import '../custom_theme.dart';
 
 void main() => runApp(const MyApp());
 
@@ -13,10 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.lightBlue[800],
-      ),
+      theme: CustomTheme.darkTheme,
       home: const MyStatefulWidget(),
     );
   }
@@ -65,7 +63,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Theme.of(context).primaryColor,
         onTap: _onItemTapped,
       ),
     );

@@ -5,7 +5,7 @@ import '../model/treatment.dart';
 import '../model/entry.dart';
 import '../model/wave_data_point.dart';
 import '../model/humalog_wave.dart';
-import 'package:sattiv/constants.dart';
+import '../constants.dart';
 
 class BgScatterPlot extends StatefulWidget {
   final List<Entry> entries;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sattiv/custom_theme.dart';
 import 'dart:math' as math;
 
-import 'package:sattiv/model/entry.dart';
-import 'package:sattiv/constants.dart';
+import '../model/entry.dart';
+import '../custom_theme.dart';
+import '../constants.dart';
 
 class CircularBgIndicator extends StatelessWidget {
   final Entry entry;
@@ -14,12 +16,10 @@ class CircularBgIndicator extends StatelessWidget {
 
   Widget putArrow(Entry entry) {
     const double iconSize = 30;
-    const Color iconColor = Colors.black;
     if (entry.direction == "Flat") {
       return const Icon(
         Icons.arrow_forward_outlined,
         size: iconSize,
-        color: iconColor,
       );
     } else if (entry.direction == "FortyFiveUp") {
       return Transform.rotate(
@@ -27,7 +27,6 @@ class CircularBgIndicator extends StatelessWidget {
         child: const Icon(
           Icons.arrow_forward_outlined,
           size: iconSize,
-          color: iconColor,
         ),
       );
     } else if (entry.direction == "SingleUp") {
@@ -36,7 +35,6 @@ class CircularBgIndicator extends StatelessWidget {
         child: const Icon(
           Icons.arrow_forward_outlined,
           size: iconSize,
-          color: iconColor,
         ),
       );
     } else if (entry.direction == "FortyFiveDown") {
@@ -45,7 +43,6 @@ class CircularBgIndicator extends StatelessWidget {
         child: const Icon(
           Icons.arrow_forward_outlined,
           size: iconSize,
-          color: iconColor,
         ),
       );
     } else if (entry.direction == "SingleDown") {
@@ -54,14 +51,12 @@ class CircularBgIndicator extends StatelessWidget {
         child: const Icon(
           Icons.arrow_forward_outlined,
           size: iconSize,
-          color: Colors.black,
         ),
       );
     } else {
       return const Icon(
-        Icons.cloud_off,
+        Icons.autorenew_rounded,
         size: 40,
-        color: Colors.black,
       );
     }
   }
@@ -69,9 +64,9 @@ class CircularBgIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const ShapeDecoration(
-        color: Colors.green,
-        shape: CircleBorder(),
+      decoration: ShapeDecoration(
+        color: Theme.of(context).primaryColor,
+        shape: const CircleBorder(),
       ),
       child: Padding(
         padding: const EdgeInsets.all(40.0),
@@ -80,16 +75,13 @@ class CircularBgIndicator extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
+              // TODO: units
               (entry.sgv / 18).toStringAsFixed(1),
-              style: Theme.of(context).textTheme.headline3?.copyWith(
-                    color: Colors.black,
-                  ),
+              style: Theme.of(context).textTheme.headline3,
             ),
             Text(
               kUnits,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    color: Colors.black,
-                  ),
+              style: Theme.of(context).textTheme.bodyText1,
             ),
             putArrow(entry),
           ],

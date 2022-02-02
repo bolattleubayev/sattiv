@@ -4,8 +4,8 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:sattiv/model/entry.dart';
-import 'package:sattiv/model/treatment.dart';
+import '../model/entry.dart';
+import '../model/treatment.dart';
 
 Future<List<Entry>> getEntries({required DateTime afterTime}) async {
   final prefs = await SharedPreferences.getInstance();

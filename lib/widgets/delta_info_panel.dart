@@ -18,10 +18,11 @@ class DeltaInfoPanel extends StatelessWidget {
       );
       final int _difference = entries[0].sgv - entries[1].sgv;
       String _diffString;
+      // TODO: units
       if (_difference >= 0) {
         _diffString = "+${(_difference / 18).toStringAsFixed(2)}";
       } else {
-        _diffString = "-${(_difference / 18).toStringAsFixed(2)}";
+        _diffString = (_difference / 18).toStringAsFixed(2);
       }
 
       return Padding(
