@@ -8,31 +8,48 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          title: const Text("General settings"),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const GeneralSettingsScreen(),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView(
+        children: [
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.settings),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              title: Text(
+                "General settings",
+                style: Theme.of(context).textTheme.button,
               ),
-            );
-          },
-        ),
-        ListTile(
-          title: const Text("API settings"),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ApiSettingsScreen(),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GeneralSettingsScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.cloud),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              title: Text(
+                "API settings",
+                style: Theme.of(context).textTheme.button,
               ),
-            );
-          },
-        ),
-      ],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ApiSettingsScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

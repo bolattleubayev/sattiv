@@ -5,12 +5,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/entry.dart';
 import '../model/treatment.dart';
+import '../model/user_settings.dart';
 
 import '../managers/api_manager.dart';
 
 class ReadingsScreenController {
-  int? _displayIntervalHours = 1;
-  Timer? _refreshTimer;
+  UserSettings? userSettings = UserSettings(
+    isMmolL: true,
+    lowLimit: 3.9,
+    highLimit: 7.0,
+    preferredDisplayInterval: 1,
+  );
 
   ReadingsScreenController({
     Key? key,
@@ -19,40 +24,38 @@ class ReadingsScreenController {
   /// Getters
 
   int? getDisplayInterval() {
-    return _displayIntervalHours;
+    return userSettings?.preferredDisplayInterval;
   }
 
   /// Setters
 
   void setDisplayInterval({required int? hours}) {
-    _displayIntervalHours = hours;
-    saveData();
+    userSettings?.setPreferredDisplayAheadInterval(hours: hours);
   }
 
   /// API
 
   Future loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    _displayIntervalHours = (prefs.getInt('preferredDisplayInterval') ?? 1);
+    await userSettings?.getSettingsFromUserDefaults();
   }
 
   void saveData() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('preferredDisplayInterval', _displayIntervalHours ?? 1);
+    prefs.setInt('preferredDisplayInterval',
+        userSettings?.preferredDisplayInterval ?? 1);
   }
 
   Future<List<List<dynamic>>> getDataFromBackend() async {
     await loadData();
-
     return Future.wait([
       getEntries(
         afterTime: DateTime.now().subtract(
-          Duration(hours: _displayIntervalHours ?? 1),
+          Duration(hours: userSettings?.preferredDisplayInterval ?? 1),
         ),
       ),
       getTreatments(
         afterTime: DateTime.now().subtract(
-          Duration(hours: _displayIntervalHours ?? 1),
+          Duration(hours: userSettings?.preferredDisplayInterval ?? 1),
         ),
       ),
     ]);

@@ -45,7 +45,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(
+        title: "SattiV",
+      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

@@ -76,6 +76,7 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
                 child: BgScatterPlot(
                   entries: snapshot.data?[0],
                   treatments: snapshot.data?[1],
+                  screenController: screenController,
                 ),
               ),
             ],

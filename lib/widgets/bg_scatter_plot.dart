@@ -5,16 +5,19 @@ import '../model/treatment.dart';
 import '../model/entry.dart';
 import '../model/wave_data_point.dart';
 import '../model/humalog_wave.dart';
+import '../controllers/readings_screen_controller.dart';
 import '../constants.dart';
 
 class BgScatterPlot extends StatefulWidget {
   final List<Entry> entries;
   final List<Treatment> treatments;
+  final ReadingsScreenController? screenController;
 
   const BgScatterPlot({
     Key? key,
     required this.entries,
     required this.treatments,
+    required this.screenController,
   }) : super(key: key);
 
   @override
@@ -23,9 +26,21 @@ class BgScatterPlot extends StatefulWidget {
 
 class _BgScatterPlotState extends State<BgScatterPlot> {
   late ZoomPanBehavior _zoomPanBehavior;
+  late bool isMmol;
+  late double lowLimit;
+  late double highLimit;
+  late Duration timePlottedAhead;
+
+  void getUserSettings() {
+    isMmol = widget.screenController?.userSettings?.isMmolL ?? true;
+    lowLimit = widget.screenController?.userSettings?.lowLimit ?? 3.9;
+    highLimit = widget.screenController?.userSettings?.highLimit ?? 7.0;
+    timePlottedAhead = const Duration(hours: 1);
+  }
 
   @override
   void initState() {
+    getUserSettings();
     _zoomPanBehavior = ZoomPanBehavior(
       // Enables pinch zooming
       enablePinching: true,
@@ -38,6 +53,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   @override
   Widget build(BuildContext context) {
+    getUserSettings();
     return _buildDefaultScatterChart();
   }
 
@@ -48,7 +64,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
       plotAreaBorderWidth: 0,
       primaryXAxis: DateTimeAxis(
         labelIntersectAction: AxisLabelIntersectAction.multipleRows,
-        maximum: DateTime.now().add(kTimeAhead),
+        maximum: DateTime.now().add(timePlottedAhead),
         majorGridLines: const MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(
@@ -94,13 +110,63 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   }
 
   List<ScatterSeries<dynamic, DateTime>> _getScatterSeries() {
-    ScatterSeries<Entry, DateTime> bloodGlucoseValues =
+    List<Entry> normalBgValues = widget.entries.where((element) {
+      if (isMmol) {
+        return (element.sgv / 18 >= lowLimit && element.sgv / 18 <= highLimit);
+      }
+      return (element.sgv >= lowLimit && element.sgv <= highLimit);
+    }).toList();
+
+    List<Entry> lowBgValues = widget.entries.where((element) {
+      if (isMmol) {
+        return (element.sgv / 18 < lowLimit);
+      }
+      return (element.sgv < lowLimit);
+    }).toList();
+
+    List<Entry> highBgValues = widget.entries.where((element) {
+      if (isMmol) {
+        return (element.sgv / 18 > highLimit);
+      }
+      return (element.sgv > highLimit);
+    }).toList();
+
+    ScatterSeries<Entry, DateTime> normalBloodGlucoseValues =
         ScatterSeries<Entry, DateTime>(
-            dataSource: widget.entries,
+            dataSource: normalBgValues,
             opacity: 1.0,
             color: Colors.blue,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
-            yValueMapper: (Entry entry, _) => entry.sgv / 18,
+            yValueMapper: (Entry entry, _) =>
+                isMmol ? entry.sgv / 18 : entry.sgv,
+            markerSettings: const MarkerSettings(
+              height: 10,
+              width: 10,
+            ),
+            name: kUnits);
+
+    ScatterSeries<Entry, DateTime> lowBloodGlucoseValues =
+        ScatterSeries<Entry, DateTime>(
+            dataSource: lowBgValues,
+            opacity: 1.0,
+            color: Colors.redAccent,
+            xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
+            yValueMapper: (Entry entry, _) =>
+                isMmol ? entry.sgv / 18 : entry.sgv,
+            markerSettings: const MarkerSettings(
+              height: 10,
+              width: 10,
+            ),
+            name: kUnits);
+
+    ScatterSeries<Entry, DateTime> highBloodGlucoseValues =
+        ScatterSeries<Entry, DateTime>(
+            dataSource: highBgValues,
+            opacity: 1.0,
+            color: Colors.amber,
+            xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
+            yValueMapper: (Entry entry, _) =>
+                isMmol ? entry.sgv / 18 : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
@@ -117,7 +183,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         ScatterSeries<Treatment, DateTime>(
           dataSource: notes,
           opacity: 1.0,
-          color: Colors.amber,
+          color: Colors.lightGreen,
           xValueMapper: (Treatment treatment, _) =>
               DateTime.parse(treatment.created_at),
           yValueMapper: (Treatment treatment, _) => treatment.glucose,
@@ -126,12 +192,19 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             width: 15,
           ),
           name: treatment.notes,
+          dataLabelMapper: (Treatment treatment, _) => treatment.notes,
+          dataLabelSettings: DataLabelSettings(
+            isVisible: true,
+            textStyle: Theme.of(context).textTheme.button ?? const TextStyle(),
+          ),
         ),
       );
     }
 
     return <ScatterSeries<dynamic, DateTime>>[
-      bloodGlucoseValues,
+      normalBloodGlucoseValues,
+      lowBloodGlucoseValues,
+      highBloodGlucoseValues,
       ...notesValues,
     ];
   }
@@ -142,16 +215,16 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   /// The method returns line series to chart.
   List<LineSeries<_GlucoseLimits, DateTime>> _getLines() {
     _highLimit = [
-      _GlucoseLimits(DateTime.now().add(kTimeAhead), kHighLimit),
+      _GlucoseLimits(DateTime.now().add(timePlottedAhead), highLimit),
       _GlucoseLimits(
           DateTime.now().subtract(Duration(minutes: widget.entries.length * 5)),
-          kHighLimit),
+          highLimit),
     ];
     _lowLimit = [
-      _GlucoseLimits(DateTime.now().add(kTimeAhead), kLowLimit),
+      _GlucoseLimits(DateTime.now().add(timePlottedAhead), lowLimit),
       _GlucoseLimits(
           DateTime.now().subtract(Duration(minutes: widget.entries.length * 5)),
-          kLowLimit),
+          lowLimit),
     ];
 
     return <LineSeries<_GlucoseLimits, DateTime>>[
