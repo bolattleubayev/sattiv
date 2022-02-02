@@ -58,7 +58,11 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         minorTickLines: const MinorTickLines(size: 0),
       ),
       tooltipBehavior: TooltipBehavior(enable: true),
-      series: <ChartSeries>[..._getSplineSeries(), ..._getScatterSeries()],
+      series: <ChartSeries>[
+        ..._getSplineSeries(),
+        ..._getScatterSeries(),
+        ..._getLines(),
+      ],
     );
   }
 
@@ -81,7 +85,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
           xValueMapper: (WaveDataPoint dataPoint, _) => dataPoint.timeInterval,
           yValueMapper: (WaveDataPoint dataPoint, _) => dataPoint.magnitude,
           markerSettings: const MarkerSettings(isVisible: true),
-          name: 'High',
+          name: 'insulin ${treatment.insulin}u',
         ),
       );
     }
@@ -103,26 +107,82 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             ),
             name: kUnits);
 
-    ScatterSeries<Treatment, DateTime> notesValues =
+    List<Treatment> notes = widget.treatments
+        .where((element) => element.eventType == "note")
+        .toList();
+
+    List<ScatterSeries<Treatment, DateTime>> notesValues = [];
+    for (Treatment treatment in notes) {
+      notesValues.add(
         ScatterSeries<Treatment, DateTime>(
-      dataSource: widget.treatments
-          .where((element) => element.eventType == "note")
-          .toList(),
-      opacity: 1.0,
-      color: Colors.amber,
-      xValueMapper: (Treatment treatment, _) =>
-          DateTime.parse(treatment.created_at),
-      yValueMapper: (Treatment treatment, _) => treatment.glucose,
-      markerSettings: const MarkerSettings(
-        height: 15,
-        width: 15,
-      ),
-      name: "note",
-    );
+          dataSource: notes,
+          opacity: 1.0,
+          color: Colors.amber,
+          xValueMapper: (Treatment treatment, _) =>
+              DateTime.parse(treatment.created_at),
+          yValueMapper: (Treatment treatment, _) => treatment.glucose,
+          markerSettings: const MarkerSettings(
+            height: 15,
+            width: 15,
+          ),
+          name: treatment.notes,
+        ),
+      );
+    }
 
     return <ScatterSeries<dynamic, DateTime>>[
       bloodGlucoseValues,
-      notesValues,
+      ...notesValues,
     ];
   }
+
+  List<_GlucoseLimits> _highLimit = [];
+  List<_GlucoseLimits> _lowLimit = [];
+
+  /// The method returns line series to chart.
+  List<LineSeries<_GlucoseLimits, DateTime>> _getLines() {
+    _highLimit = [
+      _GlucoseLimits(DateTime.now().add(kTimeAhead), kHighLimit),
+      _GlucoseLimits(
+          DateTime.now().subtract(Duration(minutes: widget.entries.length * 5)),
+          kHighLimit),
+    ];
+    _lowLimit = [
+      _GlucoseLimits(DateTime.now().add(kTimeAhead), kLowLimit),
+      _GlucoseLimits(
+          DateTime.now().subtract(Duration(minutes: widget.entries.length * 5)),
+          kLowLimit),
+    ];
+
+    return <LineSeries<_GlucoseLimits, DateTime>>[
+      LineSeries<_GlucoseLimits, DateTime>(
+        dashArray: <double>[5, 5],
+        animationDuration: 2500,
+        dataSource: _highLimit,
+        xValueMapper: (_GlucoseLimits limits, _) => limits.x,
+        yValueMapper: (_GlucoseLimits limits, _) => limits.y,
+        width: 3,
+        color: Colors.purple,
+        name: 'High limit',
+        markerSettings: const MarkerSettings(isVisible: false),
+      ),
+      LineSeries<_GlucoseLimits, DateTime>(
+        dashArray: <double>[5, 5],
+        animationDuration: 2500,
+        dataSource: _lowLimit,
+        xValueMapper: (_GlucoseLimits limits, _) => limits.x,
+        yValueMapper: (_GlucoseLimits limits, _) => limits.y,
+        width: 3,
+        color: Colors.purple,
+        name: 'Low limit',
+        markerSettings: const MarkerSettings(isVisible: false),
+      ),
+    ];
+  }
+}
+
+class _GlucoseLimits {
+  _GlucoseLimits(this.x, this.y);
+  final DateTime x;
+  final double y;
 }

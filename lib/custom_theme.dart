@@ -4,7 +4,7 @@ class CustomTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
-      primaryColor: Colors.lightGreen,
+      primaryColor: Colors.blue,
       fontFamily: 'Montserrat',
       buttonTheme: ButtonThemeData(
         shape: RoundedRectangleBorder(

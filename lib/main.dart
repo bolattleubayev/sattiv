@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/readings_screen.dart';
 import '../screens/settings_screen.dart';
 import '../custom_theme.dart';
+import '../widgets/custom_app_bar.dart';
 
 void main() => runApp(const MyApp());
 
@@ -30,8 +31,6 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     ReadingsScreen(),
     SettingsScreen(),
@@ -46,11 +45,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SattiV'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: const CustomAppBar(),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
