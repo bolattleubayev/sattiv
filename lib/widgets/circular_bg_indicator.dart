@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sattiv/custom_theme.dart';
 import 'dart:math' as math;
 
 import '../model/entry.dart';
-import '../custom_theme.dart';
 import '../constants.dart';
 
 class CircularBgIndicator extends StatelessWidget {

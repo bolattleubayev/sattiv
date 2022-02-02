@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../model/entry.dart';
 
-class DeltaInfoPanel extends StatelessWidget {
+class DeltaInfoPanel extends StatefulWidget {
   final List<Entry> entries;
 
   const DeltaInfoPanel({
@@ -10,13 +12,40 @@ class DeltaInfoPanel extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<DeltaInfoPanel> createState() => _DeltaInfoPanelState();
+}
+
+class _DeltaInfoPanelState extends State<DeltaInfoPanel> {
+  Timer? _refreshTimer;
+
+  void _resetTimer() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(
+      const Duration(seconds: 60),
+      (Timer t) => setState(() {}),
+    );
+  }
+
+  @override
+  void initState() {
+    _resetTimer();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final bool _moreThanTwoEntries = entries.length > 1 ? true : false;
+    final bool _moreThanTwoEntries = widget.entries.length > 1 ? true : false;
     if (_moreThanTwoEntries) {
       final Duration _lastReceived = DateTime.now().difference(
-        DateTime.parse(entries[0].dateString),
+        DateTime.parse(widget.entries[0].dateString),
       );
-      final int _difference = entries[0].sgv - entries[1].sgv;
+      final int _difference = widget.entries[0].sgv - widget.entries[1].sgv;
       String _diffString;
       // TODO: units
       if (_difference >= 0) {
