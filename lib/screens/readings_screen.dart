@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sattiv/model/treatment.dart';
-import '../model/entry.dart';
-import 'package:sattiv/widgets/bg_scatter_plot.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:sattiv/widgets/circular_bg_indicator.dart';
-import 'package:sattiv/api/api_manager.dart';
+import '../model/treatment.dart';
+import '../model/entry.dart';
+import '../widgets/bg_scatter_plot.dart';
+import '../widgets/circular_bg_indicator.dart';
+import '../widgets/delta_info_panel.dart';
+import '../api/api_manager.dart';
 
 class ReadingsScreen extends StatefulWidget {
   const ReadingsScreen({Key? key}) : super(key: key);
@@ -19,9 +21,11 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
   Timer? _refreshTimer;
 
   final _noteTextController = TextEditingController();
+  int? _displayIntervalHours = 1;
 
   @override
   void initState() {
+    _refreshTimer?.cancel();
     _refreshTimer = Timer.periodic(
       const Duration(seconds: 300),
       (Timer t) => setState(
@@ -34,6 +38,7 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
         },
       ),
     );
+    _loadData();
     super.initState();
   }
 
@@ -83,6 +88,23 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
     setState(() {});
   }
 
+  //Loading values on start
+  void _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(
+      () {
+        _displayIntervalHours = (prefs.getInt('preferredDisplayInterval') ?? 1);
+      },
+    );
+  }
+
+  void _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setInt('preferredDisplayInterval', _displayIntervalHours ?? 1);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -90,12 +112,12 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
         future: Future.wait([
           getEntries(
             afterTime: DateTime.now().subtract(
-              const Duration(hours: 3),
+              Duration(hours: _displayIntervalHours ?? 1),
             ),
           ),
           getTreatments(
             afterTime: DateTime.now().subtract(
-              const Duration(hours: 3),
+              Duration(hours: _displayIntervalHours ?? 1),
             ),
           ),
         ]),
@@ -105,10 +127,92 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return ListView(
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Center(
                   child: CircularBgIndicator(entry: snapshot.data?[0].first),
+                ),
+                DeltaInfoPanel(entries: snapshot.data?[0]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      children: [
+                        Radio<int>(
+                          value: 1,
+                          groupValue: _displayIntervalHours,
+                          onChanged: (int? value) {
+                            setState(() {
+                              _displayIntervalHours = value;
+                            });
+                            _saveData();
+                          },
+                        ),
+                        const Text('1h'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Radio<int>(
+                          value: 3,
+                          groupValue: _displayIntervalHours,
+                          onChanged: (int? value) {
+                            setState(() {
+                              _displayIntervalHours = value;
+                            });
+                            _saveData();
+                          },
+                        ),
+                        const Text('3h'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Radio<int>(
+                          value: 6,
+                          groupValue: _displayIntervalHours,
+                          onChanged: (int? value) {
+                            setState(() {
+                              _displayIntervalHours = value;
+                            });
+                            _saveData();
+                          },
+                        ),
+                        const Text('6h'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Radio<int>(
+                          value: 12,
+                          groupValue: _displayIntervalHours,
+                          onChanged: (int? value) {
+                            setState(() {
+                              _displayIntervalHours = value;
+                            });
+                            _saveData();
+                          },
+                        ),
+                        const Text('12h'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Radio<int>(
+                          value: 24,
+                          groupValue: _displayIntervalHours,
+                          onChanged: (int? value) {
+                            setState(() {
+                              _displayIntervalHours = value;
+                            });
+                            _saveData();
+                          },
+                        ),
+                        const Text('24h'),
+                      ],
+                    ),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -116,6 +220,7 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
                     IconButton(
                       icon: const Icon(Icons.refresh),
                       onPressed: () {
+                        _refreshTimer?.cancel();
                         _refreshTimer = Timer.periodic(
                             const Duration(seconds: 300),
                             (Timer t) => setState(() {}));
@@ -165,7 +270,7 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
                     ),
                   ],
                 ),
-                Center(
+                Expanded(
                   child: BgScatterPlot(
                     entries: snapshot.data?[0],
                     treatments: snapshot.data?[1],

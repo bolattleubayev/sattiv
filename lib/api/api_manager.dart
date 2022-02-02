@@ -13,7 +13,7 @@ Future<List<Entry>> getEntries({required DateTime afterTime}) async {
 
   String timeString = afterTime.toUtc().toIso8601String();
   final url = Uri.parse(
-      "$_baseUrl/api/v1/entries/sgv.json?find[dateString][\$gte]=$timeString");
+      "$_baseUrl/api/v1/entries/sgv.json?find[dateString][\$gte]=$timeString&count=288");
 
   try {
     final response = await http.get(url);
@@ -31,7 +31,6 @@ Future<List<Entry>> getEntries({required DateTime afterTime}) async {
       //Adding entry to the list.
       entries.add(entry);
     }
-
     return entries;
   } on Exception catch (e, s) {
     print("fail ${e}");
