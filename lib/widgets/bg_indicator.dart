@@ -4,10 +4,10 @@ import 'dart:math' as math;
 import '../model/entry.dart';
 import '../constants.dart';
 
-class CircularBgIndicator extends StatelessWidget {
+class BgValueIndicator extends StatelessWidget {
   final Entry entry;
 
-  const CircularBgIndicator({
+  const BgValueIndicator({
     Key? key,
     required this.entry,
   }) : super(key: key);

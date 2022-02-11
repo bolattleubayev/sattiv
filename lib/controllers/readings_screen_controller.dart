@@ -10,16 +10,14 @@ import '../model/user_settings.dart';
 import '../managers/api_manager.dart';
 
 class ReadingsScreenController {
+  List<List<dynamic>>? _backendData;
+
   UserSettings? userSettings = UserSettings(
     isMmolL: true,
     lowLimit: 3.9,
     highLimit: 7.0,
     preferredDisplayInterval: 1,
   );
-
-  ReadingsScreenController({
-    Key? key,
-  });
 
   /// Getters
 
@@ -45,9 +43,9 @@ class ReadingsScreenController {
         userSettings?.preferredDisplayInterval ?? 1);
   }
 
-  Future<List<List<dynamic>>> getDataFromBackend() async {
+  Future<List<List<dynamic>>?> getDataFromBackend() async {
     await loadData();
-    return Future.wait([
+    _backendData = await Future.wait([
       getEntries(
         afterTime: DateTime.now().subtract(
           Duration(hours: userSettings?.preferredDisplayInterval ?? 1),
@@ -59,6 +57,7 @@ class ReadingsScreenController {
         ),
       ),
     ]);
+    return _backendData;
   }
 
   /// Element controllers
@@ -75,22 +74,28 @@ class ReadingsScreenController {
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text(title),
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: treatmentType == "insulin"
-                  ? TextField(
-                      controller: controller,
-                      keyboardType: TextInputType.number,
-                    )
-                  : TextField(
-                      controller: controller,
-                    ),
+              padding: const EdgeInsets.all(15.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                controller: controller,
+                keyboardType: treatmentType == "insulin"
+                    ? const TextInputType.numberWithOptions(
+                        signed: false, decimal: true)
+                    : null,
+              ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SimpleDialogOption(
+                ElevatedButton(
                   onPressed: () {
                     if (treatmentType == "insulin") {
                       Treatment treatment = Treatment.insulinInjection(
@@ -114,7 +119,7 @@ class ReadingsScreenController {
                   },
                   child: const Text('Save'),
                 ),
-                SimpleDialogOption(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },

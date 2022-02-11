@@ -3,18 +3,16 @@ import '../screens/readings_screen.dart';
 import '../screens/settings_screen.dart';
 import '../custom_theme.dart';
 import '../widgets/custom_app_bar.dart';
+import './controllers/readings_screen_controller.dart';
 
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'Flutter Code Sample';
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: _title,
       debugShowCheckedModeBanner: false,
       theme: CustomTheme.darkTheme,
       home: const MyStatefulWidget(),
@@ -30,12 +28,12 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    ReadingsScreen(),
-    SettingsScreen(),
-  ];
+  // set up controller for the reading screen
+  ReadingsScreenController readingsScreenController =
+      ReadingsScreenController();
 
+  // bottom app bar controls
+  int _selectedIndex = 0;
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -49,7 +47,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         title: "SattiV",
       ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: <Widget>[
+          ReadingsScreen(
+            controller: readingsScreenController,
+          ),
+          const SettingsScreen(),
+        ].elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

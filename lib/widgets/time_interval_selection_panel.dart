@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../controllers/readings_screen_controller.dart';
 
 class TimeIntervalSelectionPanel extends StatelessWidget {
-  final ReadingsScreenController screenController;
+  final ReadingsScreenController? screenController;
   final Function(int?) onChanged;
 
   const TimeIntervalSelectionPanel({
@@ -13,83 +13,70 @@ class TimeIntervalSelectionPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int? groupValue = screenController?.getDisplayInterval();
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Radio<int>(
-                activeColor: Theme.of(context).primaryColor,
-                value: 1,
-                groupValue: screenController.getDisplayInterval(),
-                onChanged: onChanged,
-              ),
-              Text(
-                '1h',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ],
+          HourOption(
+            hours: 1,
+            groupValue: groupValue,
+            onChanged: onChanged,
           ),
-          Row(
-            children: [
-              Radio<int>(
-                activeColor: Theme.of(context).primaryColor,
-                value: 3,
-                groupValue: screenController.getDisplayInterval(),
-                onChanged: onChanged,
-              ),
-              Text(
-                '3h',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ],
+          HourOption(
+            hours: 3,
+            groupValue: groupValue,
+            onChanged: onChanged,
           ),
-          Row(
-            children: [
-              Radio<int>(
-                activeColor: Theme.of(context).primaryColor,
-                value: 6,
-                groupValue: screenController.getDisplayInterval(),
-                onChanged: onChanged,
-              ),
-              Text(
-                '6h',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ],
+          HourOption(
+            hours: 6,
+            groupValue: groupValue,
+            onChanged: onChanged,
           ),
-          Row(
-            children: [
-              Radio<int>(
-                activeColor: Theme.of(context).primaryColor,
-                value: 12,
-                groupValue: screenController.getDisplayInterval(),
-                onChanged: onChanged,
-              ),
-              Text(
-                '12h',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ],
+          HourOption(
+            hours: 12,
+            groupValue: groupValue,
+            onChanged: onChanged,
           ),
-          Row(
-            children: [
-              Radio<int>(
-                activeColor: Theme.of(context).primaryColor,
-                value: 24,
-                groupValue: screenController.getDisplayInterval(),
-                onChanged: onChanged,
-              ),
-              Text(
-                '24h',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ],
+          HourOption(
+            hours: 24,
+            groupValue: groupValue,
+            onChanged: onChanged,
           ),
         ],
       ),
+    );
+  }
+}
+
+class HourOption extends StatelessWidget {
+  final int hours;
+  final int? groupValue;
+  final Function(int?) onChanged;
+
+  const HourOption({
+    Key? key,
+    required this.hours,
+    this.groupValue,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Radio<int>(
+          activeColor: Theme.of(context).primaryColor,
+          value: hours,
+          groupValue: groupValue,
+          onChanged: onChanged,
+        ),
+        Text(
+          "${hours}h",
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+      ],
     );
   }
 }

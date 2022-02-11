@@ -9,11 +9,6 @@ class CustomTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           primary: Colors.blue,
-          minimumSize: const Size(double.infinity, 42),
-          textStyle: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-          ),
         ),
       ),
       buttonTheme: ButtonThemeData(
