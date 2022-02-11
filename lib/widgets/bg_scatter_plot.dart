@@ -5,18 +5,15 @@ import '../model/treatment.dart';
 import '../model/entry.dart';
 import '../model/wave_data_point.dart';
 import '../model/humalog_wave.dart';
+import '../model/user_settings.dart';
 import '../controllers/readings_screen_controller.dart';
 import '../constants.dart';
 
 class BgScatterPlot extends StatefulWidget {
-  final List<Entry> entries;
-  final List<Treatment> treatments;
   final ReadingsScreenController? screenController;
 
   const BgScatterPlot({
     Key? key,
-    required this.entries,
-    required this.treatments,
     required this.screenController,
   }) : super(key: key);
 
@@ -26,16 +23,13 @@ class BgScatterPlot extends StatefulWidget {
 
 class _BgScatterPlotState extends State<BgScatterPlot> {
   late ZoomPanBehavior _zoomPanBehavior;
-  late bool isMmol;
-  late double lowLimit;
-  late double highLimit;
+  late UserSettings userSettings;
   late Duration timePlottedAhead;
 
   void getUserSettings() {
-    isMmol = widget.screenController?.userSettings?.isMmolL ?? true;
-    lowLimit = widget.screenController?.userSettings?.lowLimit ?? 3.9;
-    highLimit = widget.screenController?.userSettings?.highLimit ?? 7.0;
-    timePlottedAhead = const Duration(hours: 1);
+    userSettings = widget.screenController?.getUserSettings() ??
+        UserSettings.defaultValues();
+    timePlottedAhead = Duration(hours: userSettings.preferredDisplayInterval);
   }
 
   @override
@@ -84,9 +78,11 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   /// Returns the list of chart series which need to render on the spline chart.
   List<SplineSeries<WaveDataPoint, DateTime>> _getSplineSeries() {
-    List<Treatment> insulinInjections = widget.treatments
-        .where((element) => element.eventType == "insulin")
-        .toList();
+    List<Treatment> insulinInjections = widget.screenController
+            ?.getTreatments()
+            ?.where((element) => element.eventType == "insulin")
+            .toList() ??
+        [];
     List<SplineSeries<WaveDataPoint, DateTime>> returnSeries = [];
 
     for (Treatment treatment in insulinInjections) {
@@ -110,26 +106,34 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   }
 
   List<ScatterSeries<dynamic, DateTime>> _getScatterSeries() {
-    List<Entry> normalBgValues = widget.entries.where((element) {
-      if (isMmol) {
-        return (element.sgv / 18 >= lowLimit && element.sgv / 18 <= highLimit);
-      }
-      return (element.sgv >= lowLimit && element.sgv <= highLimit);
-    }).toList();
+    List<Entry> normalBgValues =
+        widget.screenController?.getEntries()?.where((element) {
+              if (userSettings.isMmolL) {
+                return (element.sgv / 18 >= userSettings.lowLimit &&
+                    element.sgv / 18 <= userSettings.highLimit);
+              }
+              return (element.sgv >= userSettings.lowLimit &&
+                  element.sgv <= userSettings.highLimit);
+            }).toList() ??
+            [];
 
-    List<Entry> lowBgValues = widget.entries.where((element) {
-      if (isMmol) {
-        return (element.sgv / 18 < lowLimit);
-      }
-      return (element.sgv < lowLimit);
-    }).toList();
+    List<Entry> lowBgValues =
+        widget.screenController?.getEntries()?.where((element) {
+              if (userSettings.isMmolL) {
+                return (element.sgv / 18 < userSettings.lowLimit);
+              }
+              return (element.sgv < userSettings.lowLimit);
+            }).toList() ??
+            [];
 
-    List<Entry> highBgValues = widget.entries.where((element) {
-      if (isMmol) {
-        return (element.sgv / 18 > highLimit);
-      }
-      return (element.sgv > highLimit);
-    }).toList();
+    List<Entry> highBgValues =
+        widget.screenController?.getEntries()?.where((element) {
+              if (userSettings.isMmolL) {
+                return (element.sgv / 18 > userSettings.highLimit);
+              }
+              return (element.sgv > userSettings.highLimit);
+            }).toList() ??
+            [];
 
     ScatterSeries<Entry, DateTime> normalBloodGlucoseValues =
         ScatterSeries<Entry, DateTime>(
@@ -138,7 +142,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.blue,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                isMmol ? entry.sgv / 18 : entry.sgv,
+                userSettings.isMmolL ? entry.sgv / 18 : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
@@ -152,7 +156,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.redAccent,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                isMmol ? entry.sgv / 18 : entry.sgv,
+                userSettings.isMmolL ? entry.sgv / 18 : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
@@ -166,16 +170,18 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.amber,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                isMmol ? entry.sgv / 18 : entry.sgv,
+                userSettings.isMmolL ? entry.sgv / 18 : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
             ),
             name: kUnits);
 
-    List<Treatment> notes = widget.treatments
-        .where((element) => element.eventType == "note")
-        .toList();
+    List<Treatment> notes = widget.screenController
+            ?.getTreatments()
+            ?.where((element) => element.eventType == "note")
+            .toList() ??
+        [];
 
     List<ScatterSeries<Treatment, DateTime>> notesValues = [];
     for (Treatment treatment in notes) {
@@ -215,16 +221,21 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   /// The method returns line series to chart.
   List<LineSeries<_GlucoseLimits, DateTime>> _getLines() {
     _highLimit = [
-      _GlucoseLimits(DateTime.now().add(timePlottedAhead), highLimit),
       _GlucoseLimits(
-          DateTime.now().subtract(Duration(minutes: widget.entries.length * 5)),
-          highLimit),
+          DateTime.now().add(timePlottedAhead), userSettings.highLimit),
+      _GlucoseLimits(
+          DateTime.now().subtract(Duration(
+              minutes: widget.screenController?.getEntries()?.length ?? 0 * 5)),
+          userSettings.highLimit),
     ];
+
     _lowLimit = [
-      _GlucoseLimits(DateTime.now().add(timePlottedAhead), lowLimit),
       _GlucoseLimits(
-          DateTime.now().subtract(Duration(minutes: widget.entries.length * 5)),
-          lowLimit),
+          DateTime.now().add(timePlottedAhead), userSettings.lowLimit),
+      _GlucoseLimits(
+          DateTime.now().subtract(Duration(
+              minutes: widget.screenController?.getEntries()?.length ?? 0 * 5)),
+          userSettings.lowLimit),
     ];
 
     return <LineSeries<_GlucoseLimits, DateTime>>[

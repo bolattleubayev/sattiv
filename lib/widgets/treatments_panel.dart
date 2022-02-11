@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../model/entry.dart';
 import '../controllers/readings_screen_controller.dart';
 
 class TreatmentsPanel extends StatelessWidget {
-  final ReadingsScreenController screenController;
-  final Entry lastEntry;
+  final ReadingsScreenController? screenController;
   final Function timerResetCallback;
   final Function onComplete;
   final TextEditingController insulinInjectionController;
@@ -14,7 +12,6 @@ class TreatmentsPanel extends StatelessWidget {
   const TreatmentsPanel({
     Key? key,
     required this.screenController,
-    required this.lastEntry,
     required this.insulinInjectionController,
     required this.noteTextController,
     required this.timerResetCallback,
@@ -35,9 +32,8 @@ class TreatmentsPanel extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.mode),
           onPressed: () {
-            screenController.displayDialog(
+            screenController?.displayDialog(
               context: context,
-              lastBgReading: lastEntry,
               treatmentType: "insulin",
               title: 'Enter insulin amount',
               controller: insulinInjectionController,
@@ -48,9 +44,8 @@ class TreatmentsPanel extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.text_snippet),
           onPressed: () {
-            screenController.displayDialog(
+            screenController?.displayDialog(
               context: context,
-              lastBgReading: lastEntry,
               treatmentType: "note",
               title: 'Enter note',
               controller: noteTextController,

@@ -11,52 +11,63 @@ import '../managers/api_manager.dart';
 
 class ReadingsScreenController {
   List<List<dynamic>>? _backendData;
+  List<Entry>? _entries;
+  List<Treatment>? _treatments;
 
-  UserSettings? userSettings = UserSettings(
-    isMmolL: true,
-    lowLimit: 3.9,
-    highLimit: 7.0,
-    preferredDisplayInterval: 1,
-  );
+  final UserSettings? _userSettings = UserSettings.defaultValues();
 
   /// Getters
 
   int? getDisplayInterval() {
-    return userSettings?.preferredDisplayInterval;
+    return _userSettings?.preferredDisplayInterval;
+  }
+
+  UserSettings? getUserSettings() {
+    return _userSettings;
+  }
+
+  List<Entry>? getEntries() {
+    return _entries;
+  }
+
+  List<Treatment>? getTreatments() {
+    return _treatments;
   }
 
   /// Setters
 
   void setDisplayInterval({required int? hours}) {
-    userSettings?.setPreferredDisplayAheadInterval(hours: hours);
+    _userSettings?.setPreferredDisplayAheadInterval(hours: hours);
   }
 
   /// API
 
   Future loadData() async {
-    await userSettings?.getSettingsFromUserDefaults();
+    await _userSettings?.getSettingsFromUserDefaults();
   }
 
   void saveData() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('preferredDisplayInterval',
-        userSettings?.preferredDisplayInterval ?? 1);
+        _userSettings?.preferredDisplayInterval ?? 1);
   }
 
   Future<List<List<dynamic>>?> getDataFromBackend() async {
     await loadData();
-    _backendData = await Future.wait([
-      getEntries(
-        afterTime: DateTime.now().subtract(
-          Duration(hours: userSettings?.preferredDisplayInterval ?? 1),
-        ),
+
+    _entries = await getEntriesFromApi(
+      afterTime: DateTime.now().subtract(
+        Duration(hours: _userSettings?.preferredDisplayInterval ?? 1),
       ),
-      getTreatments(
-        afterTime: DateTime.now().subtract(
-          Duration(hours: userSettings?.preferredDisplayInterval ?? 1),
-        ),
+    );
+
+    _treatments = await getTreatmentsFromApi(
+      afterTime: DateTime.now().subtract(
+        Duration(hours: _userSettings?.preferredDisplayInterval ?? 1),
       ),
-    ]);
+    );
+
+    _backendData = [_entries, _treatments].cast<List>();
     return _backendData;
   }
 
@@ -64,7 +75,6 @@ class ReadingsScreenController {
 
   displayDialog({
     required BuildContext context,
-    required Entry lastBgReading,
     required String title,
     required String treatmentType,
     required TextEditingController controller,
@@ -99,7 +109,8 @@ class ReadingsScreenController {
                   onPressed: () {
                     if (treatmentType == "insulin") {
                       Treatment treatment = Treatment.insulinInjection(
-                        lastEntry: lastBgReading,
+                        // TODO: handle null
+                        lastEntry: _entries!.first,
                         insulinAmount: controller.text,
                         // TODO: units
                         unt: "mmol/L",
@@ -107,7 +118,8 @@ class ReadingsScreenController {
                       postTreatment(treatment);
                     } else if (treatmentType == "note") {
                       Treatment treatment = Treatment.note(
-                        lastEntry: lastBgReading,
+                        // TODO: handle null
+                        lastEntry: _entries!.first,
                         note: controller.text,
                         // TODO: units
                         unt: "mmol/L",

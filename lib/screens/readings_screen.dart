@@ -65,9 +65,7 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
                 },
               ),
               TreatmentsPanel(
-                screenController:
-                    widget.controller ?? ReadingsScreenController(),
-                lastEntry: snapshot.data?[0].first,
+                screenController: widget.controller,
                 insulinInjectionController: _insulinInjectionController,
                 noteTextController: _noteTextController,
                 timerResetCallback: _resetTimer,
@@ -77,8 +75,6 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
               ),
               Expanded(
                 child: BgScatterPlot(
-                  entries: snapshot.data?[0],
-                  treatments: snapshot.data?[1],
                   screenController: widget.controller,
                 ),
               ),

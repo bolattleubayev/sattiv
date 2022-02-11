@@ -6,11 +6,19 @@ class UserSettings {
   double highLimit;
   int preferredDisplayInterval;
 
-  UserSettings(
-      {required this.isMmolL,
-      required this.lowLimit,
-      required this.highLimit,
-      required this.preferredDisplayInterval});
+  UserSettings({
+    required this.isMmolL,
+    required this.lowLimit,
+    required this.highLimit,
+    required this.preferredDisplayInterval,
+  });
+
+  // Default initializer
+  UserSettings.defaultValues()
+      : isMmolL = true,
+        lowLimit = 3.9,
+        highLimit = 7.0,
+        preferredDisplayInterval = 1;
 
   Future getSettingsFromUserDefaults() async {
     final prefs = await SharedPreferences.getInstance();

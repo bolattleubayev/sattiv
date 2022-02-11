@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/entry.dart';
 import '../model/treatment.dart';
 
-Future<List<Entry>> getEntries({required DateTime afterTime}) async {
+Future<List<Entry>> getEntriesFromApi({required DateTime afterTime}) async {
   final prefs = await SharedPreferences.getInstance();
   final _baseUrl = prefs.getString('baseUrl') ?? "";
 
@@ -41,7 +41,8 @@ Future<List<Entry>> getEntries({required DateTime afterTime}) async {
   return [];
 }
 
-Future<List<Treatment>> getTreatments({required DateTime afterTime}) async {
+Future<List<Treatment>> getTreatmentsFromApi(
+    {required DateTime afterTime}) async {
   final prefs = await SharedPreferences.getInstance();
   final _baseUrl = prefs.getString('baseUrl') ?? "";
 
