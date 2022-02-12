@@ -29,7 +29,8 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   void getUserSettings() {
     userSettings = widget.screenController?.getUserSettings() ??
         UserSettings.defaultValues();
-    timePlottedAhead = Duration(hours: userSettings.preferredDisplayInterval);
+    // TODO: Time plotted ahead
+    timePlottedAhead = const Duration(hours: 1);
   }
 
   @override
@@ -61,8 +62,9 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         maximum: DateTime.now().add(timePlottedAhead),
         majorGridLines: const MajorGridLines(width: 0),
       ),
-      primaryYAxis: NumericAxis(
+      primaryYAxis: LogarithmicAxis(
         minimum: kMinimumPlotXAxis,
+        logBase: 1.065,
         labelFormat: '{value}',
         axisLine: const AxisLine(width: 0),
         minorTickLines: const MinorTickLines(size: 0),
@@ -92,7 +94,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
           width: 4,
           dataSource: HumalogWave(
             magnitude: treatment.insulin,
-            injectionTime: DateTime.parse(treatment.created_at),
+            injectionTime: DateTime.parse(treatment.id),
           ).wave,
           xValueMapper: (WaveDataPoint dataPoint, _) => dataPoint.timeInterval,
           yValueMapper: (WaveDataPoint dataPoint, _) => dataPoint.magnitude,
@@ -191,7 +193,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
           opacity: 1.0,
           color: Colors.lightGreen,
           xValueMapper: (Treatment treatment, _) =>
-              DateTime.parse(treatment.created_at),
+              DateTime.parse(treatment.id),
           yValueMapper: (Treatment treatment, _) => treatment.glucose,
           markerSettings: const MarkerSettings(
             height: 15,
@@ -223,7 +225,8 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
     _highLimit = [
       _GlucoseLimits(
           DateTime.now().subtract(Duration(
-              minutes: widget.screenController?.getEntries()?.length ?? 0 * 5)),
+              minutes:
+                  ((widget.screenController?.getEntries()?.length ?? 0) * 5))),
           userSettings.highLimit),
       _GlucoseLimits(
           DateTime.now().add(timePlottedAhead), userSettings.highLimit),
@@ -232,7 +235,8 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
     _lowLimit = [
       _GlucoseLimits(
           DateTime.now().subtract(Duration(
-              minutes: widget.screenController?.getEntries()?.length ?? 0 * 5)),
+              minutes:
+                  ((widget.screenController?.getEntries()?.length ?? 0) * 5))),
           userSettings.lowLimit),
       _GlucoseLimits(
           DateTime.now().add(timePlottedAhead), userSettings.lowLimit),

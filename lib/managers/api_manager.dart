@@ -41,6 +41,52 @@ Future<List<Entry>> getEntriesFromApi({required DateTime afterTime}) async {
   return [];
 }
 
+Future<void> undoLastTreatment() async {
+  // Get ID of the last treatment
+  final prefs = await SharedPreferences.getInstance();
+  final _baseUrl = prefs.getString('baseUrl') ?? "";
+  final _sha1ApiSecret = prefs.getString('apiSecretSha1') ?? "";
+
+  final url = Uri.parse("$_baseUrl/api/v1/treatments.json?count=1");
+
+  try {
+    final response = await http.get(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('status code ${response.statusCode}');
+    }
+
+    var responseData = json.decode(response.body);
+    //Creating a list to store input data;
+    String createdAt = responseData.first["created_at"];
+
+    final deleteUrl = Uri.parse(
+        "$_baseUrl/api/v1/treatments.json?find[created_at][\$eq]=$createdAt");
+
+    try {
+      final response = await http.delete(
+        deleteUrl,
+        headers: <String, String>{
+          'API-SECRET': _sha1ApiSecret,
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('status code ${response.statusCode}');
+      }
+    } on Exception catch (e, s) {
+      print("fail 2 ${e}");
+    } on TypeError catch (e) {
+      print("fail 2 ${e}");
+    }
+  } on Exception catch (e, s) {
+    print("fail 1 ${e}");
+  } on TypeError catch (e) {
+    print("fail 1 ${e}");
+  }
+}
+
 Future<List<Treatment>> getTreatmentsFromApi(
     {required DateTime afterTime}) async {
   final prefs = await SharedPreferences.getInstance();

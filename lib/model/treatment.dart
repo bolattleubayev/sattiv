@@ -5,7 +5,6 @@ import '../model/entry.dart';
 class Treatment {
   final String id;
   final String eventType;
-  final String created_at;
   final double glucose;
   final String glucoseType;
   final double carbs;
@@ -21,7 +20,6 @@ class Treatment {
   Treatment({
     required this.id,
     required this.eventType,
-    required this.created_at,
     required this.glucose,
     required this.glucoseType,
     required this.carbs,
@@ -38,10 +36,10 @@ class Treatment {
   Treatment.note({
     required Entry lastEntry,
     required String note,
+    required DateTime treatmentTime,
     String unt = "mmol/L",
-  })  : id = DateTime.now().toUtc().toIso8601String(),
+  })  : id = treatmentTime.toUtc().toIso8601String(),
         eventType = "note",
-        created_at = "",
         glucose = (unt == "mmol/L" ? lastEntry.sgv / 18 : lastEntry.sgv * 1.0),
         glucoseType = "",
         carbs = 0.0,
@@ -58,10 +56,10 @@ class Treatment {
   Treatment.insulinInjection({
     required Entry lastEntry,
     required String insulinAmount,
+    required DateTime treatmentTime,
     String unt = "mmol/L",
-  })  : id = DateTime.now().toUtc().toIso8601String(),
+  })  : id = treatmentTime.toUtc().toIso8601String(),
         eventType = "insulin",
-        created_at = "",
         glucose = (unt == "mmol/L" ? lastEntry.sgv / 18 : lastEntry.sgv * 1.0),
         glucoseType = "",
         carbs = 0.0,
@@ -79,7 +77,6 @@ class Treatment {
     return {
       '_id': id,
       'eventType': eventType,
-      'created_at': created_at,
       'glucose': glucose,
       'glucoseType': glucoseType,
       'carbs': carbs,
@@ -97,7 +94,6 @@ class Treatment {
   Treatment.fromMap(Map<String, dynamic> res)
       : id = res["_id"] ?? "",
         eventType = res["eventType"] ?? "",
-        created_at = res["created_at"],
         glucose = (res["glucose"] ?? 0.0) * 1.0,
         glucoseType = res["glucoseType"] ?? "",
         carbs = (res["carbs"] ?? 0.0) * 1.0,

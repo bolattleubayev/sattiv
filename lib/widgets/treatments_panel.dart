@@ -6,6 +6,10 @@ import '../managers/api_manager.dart';
 
 import '../controllers/readings_screen_controller.dart';
 
+import '../constants.dart';
+
+// TODO this warning
+//ignore: must_be_immutable
 class TreatmentsPanel extends StatelessWidget {
   final ReadingsScreenController? screenController;
   final Function timerResetCallback;
@@ -86,6 +90,7 @@ class TreatmentsPanel extends StatelessWidget {
                           // TODO: handle null
                           lastEntry: screenController!.getEntries()!.first,
                           insulinAmount: controller.text,
+                          treatmentTime: timeOfDayToDateTime(_selectedTime),
                           // TODO: units
                           unt: "mmol/L",
                         );
@@ -95,6 +100,7 @@ class TreatmentsPanel extends StatelessWidget {
                           // TODO: handle null
                           lastEntry: screenController!.getEntries()!.first,
                           note: controller.text,
+                          treatmentTime: timeOfDayToDateTime(_selectedTime),
                           // TODO: units
                           unt: "mmol/L",
                         );
@@ -131,6 +137,12 @@ class TreatmentsPanel extends StatelessWidget {
           icon: const Icon(Icons.refresh),
           onPressed: () {
             timerResetCallback();
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.undo),
+          onPressed: () {
+            undoLastTreatment();
           },
         ),
         IconButton(
