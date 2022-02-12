@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../screens/readings_screen.dart';
 import '../screens/settings_screen.dart';
+import '../screens/calibrations_screen.dart';
 import '../custom_theme.dart';
 import '../widgets/custom_app_bar.dart';
 import './controllers/readings_screen_controller.dart';
@@ -61,6 +62,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ReadingsScreen(
             controller: readingsScreenController,
           ),
+          const CalibrationsScreen(),
           const SettingsScreen(),
         ].elementAt(_selectedIndex),
       ),
@@ -69,6 +71,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bloodtype),
             label: 'Readings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.touch_app_rounded),
+            label: 'Calibrations',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

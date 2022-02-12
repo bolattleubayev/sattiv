@@ -7,6 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/entry.dart';
 import '../model/treatment.dart';
 
+/// From the internet about calibrations
+/// sgv=(unfiltered/1000-intercept)*slope
+/// mbg contains actual measured values
+/// cal has intercept and slope
+/// mbg and cal are on same timestamps
+///
+
 Future<List<Entry>> getEntriesFromApi({required DateTime afterTime}) async {
   final prefs = await SharedPreferences.getInstance();
   final _baseUrl = prefs.getString('baseUrl') ?? "";
