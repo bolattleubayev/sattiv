@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/entry.dart';
@@ -10,10 +9,10 @@ import '../model/user_settings.dart';
 import '../managers/api_manager.dart';
 
 class ReadingsScreenController {
+  /// App data
   List<List<dynamic>>? _backendData;
   List<Entry>? _entries;
   List<Treatment>? _treatments;
-
   final UserSettings? _userSettings = UserSettings.defaultValues();
 
   /// Getters
@@ -42,7 +41,7 @@ class ReadingsScreenController {
 
   /// API
 
-  Future loadData() async {
+  Future loadDataFromUserDefaults() async {
     await _userSettings?.getSettingsFromUserDefaults();
   }
 
@@ -53,7 +52,7 @@ class ReadingsScreenController {
   }
 
   Future<List<List<dynamic>>?> getDataFromBackend() async {
-    await loadData();
+    await loadDataFromUserDefaults();
 
     _entries = await getEntriesFromApi(
       afterTime: DateTime.now().subtract(
@@ -73,77 +72,4 @@ class ReadingsScreenController {
 
   /// Element controllers
 
-  displayDialog({
-    required BuildContext context,
-    required String title,
-    required String treatmentType,
-    required TextEditingController controller,
-    required Function onComplete,
-  }) async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text(
-            title,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                controller: controller,
-                keyboardType: treatmentType == "insulin"
-                    ? const TextInputType.numberWithOptions(
-                        signed: false, decimal: true)
-                    : null,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    if (treatmentType == "insulin") {
-                      Treatment treatment = Treatment.insulinInjection(
-                        // TODO: handle null
-                        lastEntry: _entries!.first,
-                        insulinAmount: controller.text,
-                        // TODO: units
-                        unt: "mmol/L",
-                      );
-                      postTreatment(treatment);
-                    } else if (treatmentType == "note") {
-                      Treatment treatment = Treatment.note(
-                        // TODO: handle null
-                        lastEntry: _entries!.first,
-                        note: controller.text,
-                        // TODO: units
-                        unt: "mmol/L",
-                      );
-                      postTreatment(treatment);
-                    }
-                    controller.text = "";
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Save'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Cancel'),
-                ),
-              ],
-            ),
-          ],
-          elevation: 10,
-        );
-      },
-    );
-    onComplete();
-  }
 }

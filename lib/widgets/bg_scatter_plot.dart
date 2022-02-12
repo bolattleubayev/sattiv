@@ -222,20 +222,20 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   List<LineSeries<_GlucoseLimits, DateTime>> _getLines() {
     _highLimit = [
       _GlucoseLimits(
-          DateTime.now().add(timePlottedAhead), userSettings.highLimit),
-      _GlucoseLimits(
           DateTime.now().subtract(Duration(
               minutes: widget.screenController?.getEntries()?.length ?? 0 * 5)),
           userSettings.highLimit),
+      _GlucoseLimits(
+          DateTime.now().add(timePlottedAhead), userSettings.highLimit),
     ];
 
     _lowLimit = [
       _GlucoseLimits(
-          DateTime.now().add(timePlottedAhead), userSettings.lowLimit),
-      _GlucoseLimits(
           DateTime.now().subtract(Duration(
               minutes: widget.screenController?.getEntries()?.length ?? 0 * 5)),
           userSettings.lowLimit),
+      _GlucoseLimits(
+          DateTime.now().add(timePlottedAhead), userSettings.lowLimit),
     ];
 
     return <LineSeries<_GlucoseLimits, DateTime>>[

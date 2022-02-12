@@ -78,7 +78,6 @@ class _ApiSettingsFormState extends State<ApiSettingsForm> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
               children: [
