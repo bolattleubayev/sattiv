@@ -1,3 +1,5 @@
+<img align="right" height=40 src="assets/misc/logo2.png">
+
 # SattiV
 
 ## About the app
@@ -19,7 +21,7 @@ functionality of  adding and visualizing treatments (notes and insulin injection
 ### Features
 * Nightscout follower mode
 * Real-time monitoring of blood glucose
-* Adding treatments (bolus, notes)
+* Adding/undoing treatments (bolus, notes)
 
 
 ## For developers
@@ -29,7 +31,6 @@ functionality of  adding and visualizing treatments (notes and insulin injection
 * Add notifications and sounds
 * Be smarter about data usage (right now all entries are queried from API, no local storage)
 * Add calibrations chart
-* Add undo treatment button
 * Add "master" mode (aka Bluetooth connection)
 * Add forecasts (probably linear or low order polynomials should do fine)
 

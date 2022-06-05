@@ -5,7 +5,8 @@ import '../screens/settings_screen.dart';
 import '../screens/calibrations_screen.dart';
 import '../custom_theme.dart';
 import '../widgets/custom_app_bar.dart';
-import './controllers/readings_screen_controller.dart';
+import '../controllers/readings_screen_controller.dart';
+import '../controllers/calibrations_screen_controller.dart';
 
 void main() => runApp(const MyApp());
 
@@ -30,9 +31,11 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  // set up controller for the reading screen
+  // set up controllers for the reading screen
   ReadingsScreenController readingsScreenController =
       ReadingsScreenController();
+  CalibrationsScreenController calibrationsScreenController =
+      CalibrationsScreenController();
 
   // bottom app bar controls
   int _selectedIndex = 0;
@@ -62,7 +65,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ReadingsScreen(
             controller: readingsScreenController,
           ),
-          const CalibrationsScreen(),
+          CalibrationsScreen(
+            controller: calibrationsScreenController,
+          ),
           const SettingsScreen(),
         ].elementAt(_selectedIndex),
       ),

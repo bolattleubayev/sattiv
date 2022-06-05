@@ -32,6 +32,16 @@ class Entry {
     };
   }
 
+  Entry.defaultValues()
+      : date = 0,
+        type = "empty",
+        dateString = "",
+        sgv = 0,
+        direction = "",
+        noise = 0,
+        filtered = 0,
+        unfiltered = 0;
+
   Entry.fromMap(Map<String, dynamic> res)
       : date = res["date"],
         type = res["type"],

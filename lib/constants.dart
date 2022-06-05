@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../model/calibration.dart';
+import '../model/measured_blood_glucose.dart';
 
 /// Preferences
 
@@ -14,4 +16,14 @@ DateTime timeOfDayToDateTime(TimeOfDay timeOfDay) {
   final now = DateTime.now();
   return DateTime(
       now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+}
+
+bool correspondsToCalibration({
+  required Calibration calibration,
+  required MeasuredBloodGlucose measuredBloodGlucose,
+}) {
+  if (calibration.date == measuredBloodGlucose.date) {
+    return true;
+  }
+  return false;
 }
