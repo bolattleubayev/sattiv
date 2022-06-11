@@ -19,7 +19,7 @@ class _CalibrationsScreenState extends State<CalibrationsScreen> {
     return FutureBuilder(
       future: widget.controller?.getDataFromBackend(),
       builder: (BuildContext ctx, AsyncSnapshot<List<dynamic>?> snapshot) {
-        if (snapshot.data?[0] == null || snapshot.data?[1] == null) {
+        if (snapshot.data == null) {
           return const Center(
             child: CircularProgressIndicator(),
           );
