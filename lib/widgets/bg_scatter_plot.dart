@@ -6,6 +6,7 @@ import '../model/entry.dart';
 import '../model/wave_data_point.dart';
 import '../model/humalog_wave.dart';
 import '../model/user_settings.dart';
+import '../model/cartesian.dart';
 import '../controllers/readings_screen_controller.dart';
 import '../constants.dart';
 
@@ -31,6 +32,24 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         UserSettings.defaultValues();
     // TODO: Time plotted ahead
     timePlottedAhead = const Duration(hours: 1);
+  }
+
+  LineSeries<T, K> _buildLineSeries<T extends Cartesian, K>({
+    required List<T> dataSource,
+    required String name,
+    required Color color,
+  }) {
+    return LineSeries<T, K>(
+      dashArray: <double>[5, 5],
+      animationDuration: 2500,
+      dataSource: dataSource,
+      xValueMapper: (T limits, _) => limits.x as K,
+      yValueMapper: (T limits, _) => limits.y,
+      width: 3,
+      color: color,
+      name: name,
+      markerSettings: const MarkerSettings(isVisible: false),
+    );
   }
 
   @override
@@ -243,34 +262,20 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
     ];
 
     return <LineSeries<_GlucoseLimits, DateTime>>[
-      LineSeries<_GlucoseLimits, DateTime>(
-        dashArray: <double>[5, 5],
-        animationDuration: 2500,
+      _buildLineSeries(
         dataSource: _highLimit,
-        xValueMapper: (_GlucoseLimits limits, _) => limits.x,
-        yValueMapper: (_GlucoseLimits limits, _) => limits.y,
-        width: 3,
-        color: Colors.purple,
         name: 'High limit',
-        markerSettings: const MarkerSettings(isVisible: false),
-      ),
-      LineSeries<_GlucoseLimits, DateTime>(
-        dashArray: <double>[5, 5],
-        animationDuration: 2500,
-        dataSource: _lowLimit,
-        xValueMapper: (_GlucoseLimits limits, _) => limits.x,
-        yValueMapper: (_GlucoseLimits limits, _) => limits.y,
-        width: 3,
         color: Colors.purple,
+      ),
+      _buildLineSeries(
+        dataSource: _lowLimit,
         name: 'Low limit',
-        markerSettings: const MarkerSettings(isVisible: false),
+        color: Colors.purple,
       ),
     ];
   }
 }
 
-class _GlucoseLimits {
-  _GlucoseLimits(this.x, this.y);
-  final DateTime x;
-  final double y;
+class _GlucoseLimits extends Cartesian {
+  _GlucoseLimits(DateTime x, double y) : super(x, y);
 }
