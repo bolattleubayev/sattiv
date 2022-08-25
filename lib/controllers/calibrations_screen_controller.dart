@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../managers/api_manager.dart';
+import '../services/http_service.dart';
 
 import '../model/calibration_plot_datapoint.dart';
 import '../model/measured_blood_glucose.dart';

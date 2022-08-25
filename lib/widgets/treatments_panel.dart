@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../model/treatment.dart';
 
-import '../managers/api_manager.dart';
+import '../services/http_service.dart';
 
 import '../controllers/readings_screen_controller.dart';
 

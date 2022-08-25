@@ -11,9 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  provider: ^6.0.3
   http: ^0.13.4
-  syncfusion_flutter_charts: ^19.4.47
+  syncfusion_flutter_charts: ^20.2.45
   sqflite: ^2.0.2
   path: ^1.8.0
   shared_preferences: ^2.0.12

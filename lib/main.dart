@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
 import '../screens/readings_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/calibrations_screen.dart';
@@ -7,6 +9,7 @@ import '../custom_theme.dart';
 import '../widgets/custom_app_bar.dart';
 import '../controllers/readings_screen_controller.dart';
 import '../controllers/calibrations_screen_controller.dart';
+import '../view_models/calibrations_view_model.dart';
 
 void main() => runApp(const MyApp());
 
@@ -15,10 +18,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: CustomTheme.darkTheme,
-      home: const MyStatefulWidget(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CalibrationsViewModel>(
+            create: (_) => CalibrationsViewModel())
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: CustomTheme.darkTheme,
+        home: const MyStatefulWidget(),
+      ),
     );
   }
 }
@@ -65,9 +74,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ReadingsScreen(
             controller: readingsScreenController,
           ),
-          CalibrationsScreen(
-            controller: calibrationsScreenController,
-          ),
+          const CalibrationsScreen(),
           const SettingsScreen(),
         ].elementAt(_selectedIndex),
       ),

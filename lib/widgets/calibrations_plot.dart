@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:provider/provider.dart';
 
-import '../managers/api_manager.dart';
+import '../services/http_service.dart';
 import '../controllers/calibrations_screen_controller.dart';
+import '../view_models/calibrations_view_model.dart';
 
 import '../model/calibration_plot_datapoint.dart';
 import '../model/user_settings.dart';
@@ -12,11 +14,8 @@ import '../model/measured_blood_glucose.dart';
 import '../constants.dart';
 
 class CalibrationsPlot extends StatefulWidget {
-  final CalibrationsScreenController? screenController;
-
   const CalibrationsPlot({
     Key? key,
-    required this.screenController,
   }) : super(key: key);
 
   @override
@@ -25,21 +24,18 @@ class CalibrationsPlot extends StatefulWidget {
 
 class _CalibrationsPlotState extends State<CalibrationsPlot> {
   late ZoomPanBehavior _zoomPanBehavior;
-  late UserSettings userSettings;
   late Duration timePlottedAhead;
-
-  void getUserSettings() {
-    userSettings = widget.screenController?.getUserSettings() ??
-        UserSettings.defaultValues();
-  }
 
   @override
   void initState() {
-    getUserSettings();
+    // print(widget.viewModel.calibrations);
+    // print(widget.viewModel.userSettings.isMmolL);
+    // print(widget.viewModel.userSettings.highLimit);
+    // print(widget.viewModel.userSettings.lowLimit);
+    // print(widget.viewModel.userSettings.preferredDisplayInterval);
     _zoomPanBehavior = ZoomPanBehavior(
       // Enables pinch zooming
       enablePinching: true,
-      zoomMode: ZoomMode.x,
       enablePanning: true,
     );
 
@@ -48,11 +44,14 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
 
   @override
   Widget build(BuildContext context) {
-    getUserSettings();
-    return _buildDefaultScatterChart();
+    return Consumer<CalibrationsViewModel>(
+      builder: (context, viewModel, child) {
+        return _buildDefaultScatterChart(viewModel);
+      },
+    );
   }
 
-  SfCartesianChart _buildDefaultScatterChart() {
+  SfCartesianChart _buildDefaultScatterChart(CalibrationsViewModel viewModel) {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       primaryXAxis: NumericAxis(
@@ -75,15 +74,15 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
       ),
       series: <ChartSeries>[
         // Renders scatter chart
-        ..._getScatterSeries(),
+        ..._getScatterSeries(viewModel),
       ],
     );
   }
 
-  List<ScatterSeries<dynamic, double>> _getScatterSeries() {
-    List<CalibrationPlotDatapoint> datapoints =
-        widget.screenController?.getCalibrations() ?? [];
-
+  List<ScatterSeries<dynamic, double>> _getScatterSeries(
+      CalibrationsViewModel viewModel) {
+    List<CalibrationPlotDatapoint> datapoints = viewModel.calibrations;
+    // print(datapoints);
     ScatterSeries<CalibrationPlotDatapoint, double> _calibrations =
         ScatterSeries<CalibrationPlotDatapoint, double>(
             dataSource: datapoints,
@@ -96,12 +95,12 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
                 opacity: 0.7,
               ),
             ],
-            xValueMapper: (CalibrationPlotDatapoint entry, _) => userSettings
-                    .isMmolL
-                ? entry.measuredValue / 18
-                : entry.measuredValue,
+            xValueMapper: (CalibrationPlotDatapoint entry, _) =>
+                viewModel.userSettings.isMmolL
+                    ? entry.measuredValue / 18
+                    : entry.measuredValue,
             yValueMapper: (CalibrationPlotDatapoint entry, _) =>
-                userSettings.isMmolL
+                viewModel.userSettings.isMmolL
                     ? entry.sensorValue / 18
                     : entry.sensorValue,
             markerSettings: const MarkerSettings(

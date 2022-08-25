@@ -6,7 +6,7 @@ import '../model/entry.dart';
 import '../model/treatment.dart';
 import '../model/user_settings.dart';
 
-import '../managers/api_manager.dart';
+import '../services/http_service.dart';
 
 class ReadingsScreenController {
   /// App data
