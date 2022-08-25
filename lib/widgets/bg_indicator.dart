@@ -1,15 +1,18 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../view_models/readings_view_model.dart';
 import '../model/entry.dart';
 import '../constants.dart';
 
 class BgValueIndicator extends StatelessWidget {
-  final Entry entry;
+  // final Entry entry;
 
   const BgValueIndicator({
     Key? key,
-    required this.entry,
+    // required this.entry,
   }) : super(key: key);
 
   Widget putArrow(Entry entry) {
@@ -61,30 +64,38 @@ class BgValueIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            // TODO: units
-            (entry.sgv / 18).toStringAsFixed(1),
-            style: Theme.of(context).textTheme.headline1?.copyWith(
-                  fontWeight: FontWeight.normal,
-                ),
-          ),
-          Column(
+    return Consumer<ReadingsViewModel>(
+      builder: (context, viewModel, child) {
+        Entry entry = Entry.defaultValues();
+        if (viewModel.entries.isNotEmpty) {
+          entry = viewModel.entries.first;
+        }
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                kUnits,
-                style: Theme.of(context).textTheme.headline6,
+                // TODO: units
+                (entry.sgv / 18).toStringAsFixed(1),
+                style: Theme.of(context).textTheme.headline1?.copyWith(
+                      fontWeight: FontWeight.normal,
+                    ),
               ),
-              putArrow(entry),
+              Column(
+                children: [
+                  Text(
+                    kUnits,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  putArrow(entry),
+                ],
+              ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

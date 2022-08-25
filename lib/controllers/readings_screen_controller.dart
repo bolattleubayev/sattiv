@@ -35,40 +35,40 @@ class ReadingsScreenController {
 
   /// Setters
 
-  void setDisplayInterval({required int? hours}) {
-    _userSettings?.setPreferredDisplayAheadInterval(hours: hours);
-  }
+  // void setDisplayInterval({required int? hours}) {
+  //   _userSettings?.setPreferredDisplayAheadInterval(hours: hours);
+  // }
 
   /// API
-
-  Future loadDataFromUserDefaults() async {
-    await _userSettings?.getSettingsFromUserDefaults();
-  }
+  //
+  // Future loadDataFromUserDefaults() async {
+  //   await _userSettings?.getSettingsFromUserDefaults();
+  // }
 
   void saveData() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('preferredDisplayInterval',
         _userSettings?.preferredDisplayInterval ?? 1);
   }
-
-  Future<List<List<dynamic>>?> getDataFromBackend() async {
-    await loadDataFromUserDefaults();
-
-    _entries = await getEntriesFromApi(
-      afterTime: DateTime.now().subtract(
-        Duration(hours: _userSettings?.preferredDisplayInterval ?? 1),
-      ),
-    );
-
-    _treatments = await getTreatmentsFromApi(
-      afterTime: DateTime.now().subtract(
-        Duration(hours: _userSettings?.preferredDisplayInterval ?? 1),
-      ),
-    );
-
-    _backendData = [_entries, _treatments].cast<List>();
-    return _backendData;
-  }
+  //
+  // Future<List<List<dynamic>>?> getDataFromBackend() async {
+  //   await loadDataFromUserDefaults();
+  //
+  //   _entries = await getEntriesFromApi(
+  //     afterTime: DateTime.now().subtract(
+  //       Duration(hours: _userSettings?.preferredDisplayInterval ?? 1),
+  //     ),
+  //   );
+  //
+  //   _treatments = await getTreatmentsFromApi(
+  //     afterTime: DateTime.now().subtract(
+  //       Duration(hours: _userSettings?.preferredDisplayInterval ?? 1),
+  //     ),
+  //   );
+  //
+  //   _backendData = [_entries, _treatments].cast<List>();
+  //   return _backendData;
+  // }
 
   /// Element controllers
 

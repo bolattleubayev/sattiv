@@ -16,3 +16,8 @@ Future<UserSettings> getUserSettings() async {
 
   return userSettings;
 }
+
+void setPreferredDisplayAheadInterval({required int? hours}) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setInt('preferredDisplayInterval', hours ?? 1);
+}

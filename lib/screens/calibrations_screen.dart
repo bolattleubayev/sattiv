@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../widgets/calibrations_plot.dart';
-// import '../controllers/calibrations_screen_controller.dart';
 import '../view_models/calibrations_view_model.dart';
 
-import '../model/calibration_plot_datapoint.dart';
-
-import '../constants.dart';
-
 class CalibrationsScreen extends StatefulWidget {
-  // final CalibrationsScreenController? controller;
-
   const CalibrationsScreen({Key? key}) : super(key: key);
 
   @override
@@ -32,7 +24,7 @@ class _CalibrationsScreenState extends State<CalibrationsScreen> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+      children: const [
         Expanded(
           child: CalibrationsPlot(),
         ),

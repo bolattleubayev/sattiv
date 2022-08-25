@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../model/entry.dart';
+import 'package:provider/provider.dart';
+
+import '../view_models/readings_view_model.dart';
 
 class DeltaInfoPanel extends StatefulWidget {
-  final List<Entry> entries;
-
   const DeltaInfoPanel({
     Key? key,
-    required this.entries,
   }) : super(key: key);
 
   @override
@@ -40,55 +39,61 @@ class _DeltaInfoPanelState extends State<DeltaInfoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final bool _moreThanTwoEntries = widget.entries.length > 1 ? true : false;
-    if (_moreThanTwoEntries) {
-      final Duration _lastReceived = DateTime.now().difference(
-        DateTime.parse(widget.entries[0].dateString),
-      );
-      final int _difference = widget.entries[0].sgv - widget.entries[1].sgv;
-      String _diffString;
-      // TODO: units
-      if (_difference >= 0) {
-        _diffString = "+${(_difference / 18).toStringAsFixed(2)}";
-      } else {
-        _diffString = (_difference / 18).toStringAsFixed(2);
-      }
+    return Consumer<ReadingsViewModel>(
+      builder: (context, viewModel, child) {
+        List<dynamic> entries = viewModel.entries;
 
-      return Padding(
-        padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "${_lastReceived.inMinutes} minutes ago",
-              style: Theme.of(context).textTheme.headline6,
+        final bool _moreThanTwoEntries = entries.length > 1 ? true : false;
+        if (_moreThanTwoEntries) {
+          final Duration _lastReceived = DateTime.now().difference(
+            DateTime.parse(entries[0].dateString),
+          );
+          final int _difference = entries[0].sgv - entries[1].sgv;
+          String _diffString;
+          // TODO: units
+          if (_difference >= 0) {
+            _diffString = "+${(_difference / 18).toStringAsFixed(2)}";
+          } else {
+            _diffString = (_difference / 18).toStringAsFixed(2);
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "${_lastReceived.inMinutes} minutes ago",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                Text(
+                  _diffString,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ],
             ),
-            Text(
-              _diffString,
-              style: Theme.of(context).textTheme.headline6,
+          );
+        } else {
+          return Padding(
+            padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "--",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                Text(
+                  "--",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "--",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              "--",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-          ],
-        ),
-      );
-    }
+          );
+        }
+      },
+    );
   }
 }

@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
 
-import '../services/http_service.dart';
-import '../controllers/calibrations_screen_controller.dart';
 import '../view_models/calibrations_view_model.dart';
 
 import '../model/calibration_plot_datapoint.dart';
-import '../model/user_settings.dart';
-import '../model/wave_data_point.dart';
-import '../model/measured_blood_glucose.dart';
 
 import '../constants.dart';
 
@@ -28,11 +23,6 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
 
   @override
   void initState() {
-    // print(widget.viewModel.calibrations);
-    // print(widget.viewModel.userSettings.isMmolL);
-    // print(widget.viewModel.userSettings.highLimit);
-    // print(widget.viewModel.userSettings.lowLimit);
-    // print(widget.viewModel.userSettings.preferredDisplayInterval);
     _zoomPanBehavior = ZoomPanBehavior(
       // Enables pinch zooming
       enablePinching: true,
