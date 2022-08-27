@@ -7,7 +7,6 @@ import '../screens/settings_screen.dart';
 import '../screens/calibrations_screen.dart';
 import '../custom_theme.dart';
 import '../widgets/custom_app_bar.dart';
-import '../controllers/readings_screen_controller.dart';
 import '../view_models/calibrations_view_model.dart';
 import '../view_models/readings_view_model.dart';
 
@@ -42,10 +41,6 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  // set up controllers for the reading screen
-  ReadingsScreenController readingsScreenController =
-      ReadingsScreenController();
-
   // bottom app bar controls
   int _selectedIndex = 0;
   void _onItemTapped(int index) {

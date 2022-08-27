@@ -72,7 +72,6 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
   List<ScatterSeries<dynamic, double>> _getScatterSeries(
       CalibrationsViewModel viewModel) {
     List<CalibrationPlotDatapoint> datapoints = viewModel.calibrations;
-    // print(datapoints);
     ScatterSeries<CalibrationPlotDatapoint, double> _calibrations =
         ScatterSeries<CalibrationPlotDatapoint, double>(
             dataSource: datapoints,

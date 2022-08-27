@@ -9,14 +9,10 @@ import '../widgets/delta_info_panel.dart';
 import '../widgets/time_interval_selection_panel.dart';
 import '../widgets/treatments_panel.dart';
 import '../view_models/readings_view_model.dart';
-import '../controllers/readings_screen_controller.dart';
 
 class ReadingsScreen extends StatefulWidget {
-  // final ReadingsScreenController? controller;
-
   const ReadingsScreen({
     Key? key,
-    // required this.controller,
   }) : super(key: key);
 
   @override
@@ -53,28 +49,19 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
       children: [
         const DeltaInfoPanel(),
         const BgValueIndicator(),
-        // TimeIntervalSelectionPanel(
-        //   screenController: widget.controller,
-        //   onChanged: (int? value) {
-        //     setState(() {
-        //       widget.controller?.setDisplayInterval(hours: value);
-        //     });
-        //   },
-        // ),
-        // TreatmentsPanel(
-        //   screenController: widget.controller,
-        //   insulinInjectionController: _insulinInjectionController,
-        //   noteTextController: _noteTextController,
-        //   timerResetCallback: _resetTimer,
-        //   onComplete: () {
-        //     setState(() {});
-        //   },
-        // ),
-        // Expanded(
-        //   child: BgScatterPlot(
-        //     screenController: widget.controller,
-        //   ),
-        // ),
+        const TimeIntervalSelectionPanel(),
+        // TODO: take out text editing controllers and timer
+        TreatmentsPanel(
+          insulinInjectionController: _insulinInjectionController,
+          noteTextController: _noteTextController,
+          timerResetCallback: _resetTimer,
+          onComplete: () {
+            setState(() {});
+          },
+        ),
+        const Expanded(
+          child: BgScatterPlot(),
+        ),
       ],
     );
   }

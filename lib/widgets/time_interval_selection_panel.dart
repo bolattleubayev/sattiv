@@ -1,51 +1,63 @@
 import 'package:flutter/material.dart';
-import '../controllers/readings_screen_controller.dart';
+import 'package:provider/provider.dart';
+
+import '../view_models/readings_view_model.dart';
 
 class TimeIntervalSelectionPanel extends StatelessWidget {
-  final ReadingsScreenController? screenController;
-  final Function(int?) onChanged;
 
   const TimeIntervalSelectionPanel({
     Key? key,
-    required this.screenController,
-    required this.onChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int? groupValue = screenController?.getDisplayInterval();
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          HourOption(
-            hours: 1,
-            groupValue: groupValue,
-            onChanged: onChanged,
+    return Consumer<ReadingsViewModel>(
+      builder: (context, viewModel, child) {
+        int groupValue = viewModel.getDisplayInterval();
+        return Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              HourOption(
+                hours: 1,
+                groupValue: groupValue,
+                onChanged: (int? value) {
+                  viewModel.setDisplayInterval(hours: value);
+                },
+              ),
+              HourOption(
+                hours: 3,
+                groupValue: groupValue,
+                onChanged: (int? value) {
+                  viewModel.setDisplayInterval(hours: value);
+                },
+              ),
+              HourOption(
+                hours: 6,
+                groupValue: groupValue,
+                onChanged: (int? value) {
+                  viewModel.setDisplayInterval(hours: value);
+                },
+              ),
+              HourOption(
+                hours: 12,
+                groupValue: groupValue,
+                onChanged: (int? value) {
+                  viewModel.setDisplayInterval(hours: value);
+                },
+              ),
+              HourOption(
+                hours: 24,
+                groupValue: groupValue,
+                onChanged: (int? value) {
+                  viewModel.setDisplayInterval(hours: value);
+                },
+              ),
+            ],
           ),
-          HourOption(
-            hours: 3,
-            groupValue: groupValue,
-            onChanged: onChanged,
-          ),
-          HourOption(
-            hours: 6,
-            groupValue: groupValue,
-            onChanged: onChanged,
-          ),
-          HourOption(
-            hours: 12,
-            groupValue: groupValue,
-            onChanged: onChanged,
-          ),
-          HourOption(
-            hours: 24,
-            groupValue: groupValue,
-            onChanged: onChanged,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -50,12 +50,10 @@ class ReadingsViewModel extends ChangeNotifier {
   }
 
   /// Setters
-  void setDisplayInterval({required int? hours}) {
+  void setDisplayInterval({required int? hours}) async {
     setPreferredDisplayAheadInterval(hours: hours);
-  }
-
-  void saveData() {
-    setPreferredDisplayAheadInterval(
-        hours: _userSettings.preferredDisplayInterval);
+    await getDataFromBackend();
+    _userSettings = await getUserSettings();
+    notifyListeners();
   }
 }

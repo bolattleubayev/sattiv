@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../view_models/readings_view_model.dart';
 import '../model/treatment.dart';
 
 import '../services/http_service.dart';
-
-import '../controllers/readings_screen_controller.dart';
 
 import '../constants.dart';
 
 // TODO this warning
 //ignore: must_be_immutable
 class TreatmentsPanel extends StatelessWidget {
-  final ReadingsScreenController? screenController;
+  // final ReadingsScreenController? screenController;
   final Function timerResetCallback;
   final Function onComplete;
   final TextEditingController insulinInjectionController;
@@ -20,7 +20,7 @@ class TreatmentsPanel extends StatelessWidget {
 
   TreatmentsPanel({
     Key? key,
-    required this.screenController,
+    // required this.screenController,
     required this.insulinInjectionController,
     required this.noteTextController,
     required this.timerResetCallback,
@@ -29,6 +29,7 @@ class TreatmentsPanel extends StatelessWidget {
 
   displayDialog(
       {required BuildContext context,
+      required ReadingsViewModel viewModel,
       required String title,
       required String treatmentType,
       required TextEditingController controller,
@@ -88,7 +89,7 @@ class TreatmentsPanel extends StatelessWidget {
                       if (treatmentType == "insulin") {
                         Treatment treatment = Treatment.insulinInjection(
                           // TODO: handle null
-                          lastEntry: screenController!.getEntries()!.first,
+                          lastEntry: viewModel.entries.first,
                           insulinAmount: controller.text,
                           treatmentTime: timeOfDayToDateTime(_selectedTime),
                           // TODO: units
@@ -98,7 +99,7 @@ class TreatmentsPanel extends StatelessWidget {
                       } else if (treatmentType == "note") {
                         Treatment treatment = Treatment.note(
                           // TODO: handle null
-                          lastEntry: screenController!.getEntries()!.first,
+                          lastEntry: viewModel.entries.first,
                           note: controller.text,
                           treatmentTime: timeOfDayToDateTime(_selectedTime),
                           // TODO: units
@@ -130,46 +131,53 @@ class TreatmentsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: () {
-            timerResetCallback();
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.undo),
-          onPressed: () {
-            undoLastTreatment();
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.mode),
-          onPressed: () {
-            displayDialog(
-              context: context,
-              treatmentType: "insulin",
-              title: 'Enter insulin amount',
-              controller: insulinInjectionController,
-              onComplete: onComplete,
-            );
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.text_snippet),
-          onPressed: () {
-            displayDialog(
-              context: context,
-              treatmentType: "note",
-              title: 'Enter note',
-              controller: noteTextController,
-              onComplete: onComplete,
-            );
-          },
-        ),
-      ],
+    return Consumer<ReadingsViewModel>(
+      builder: (context, viewModel, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                timerResetCallback();
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.undo),
+              onPressed: () {
+                // TODO: add safety on removal
+                undoLastTreatment();
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.mode),
+              onPressed: () {
+                displayDialog(
+                  context: context,
+                  viewModel: viewModel,
+                  treatmentType: "insulin",
+                  title: 'Enter insulin amount',
+                  controller: insulinInjectionController,
+                  onComplete: onComplete,
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.text_snippet),
+              onPressed: () {
+                displayDialog(
+                  context: context,
+                  viewModel: viewModel,
+                  treatmentType: "note",
+                  title: 'Enter note',
+                  controller: noteTextController,
+                  onComplete: onComplete,
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
