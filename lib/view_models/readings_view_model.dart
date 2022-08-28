@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../services/http_service.dart';
@@ -23,6 +25,26 @@ class ReadingsViewModel extends ChangeNotifier {
   loadDataFromUserDefaults() async {
     _userSettings = await getUserSettings();
     notifyListeners();
+  }
+
+  /// Timed self-refresh
+  refresher() async {
+    Timer.periodic(const Duration(seconds: 295), (t) async {
+      _entries = await getEntriesFromApi(
+        afterTime: DateTime.now().subtract(
+          Duration(hours: _userSettings.preferredDisplayInterval),
+        ),
+      );
+
+      _treatments = await getTreatmentsFromApi(
+        afterTime: DateTime.now().subtract(
+          Duration(hours: _userSettings.preferredDisplayInterval),
+        ),
+      );
+
+      _backendData = [_entries, _treatments].cast<List>();
+      notifyListeners();
+    });
   }
 
   /// Getters

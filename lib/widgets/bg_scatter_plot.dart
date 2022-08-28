@@ -59,7 +59,9 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   Widget build(BuildContext context) {
     return Consumer<ReadingsViewModel>(
       builder: (context, viewModel, child) {
-        return _buildDefaultScatterChart(viewModel);
+        return Expanded(
+          child: _buildDefaultScatterChart(viewModel),
+        );
       },
     );
   }

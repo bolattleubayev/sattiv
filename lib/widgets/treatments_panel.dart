@@ -11,8 +11,6 @@ import '../constants.dart';
 // TODO this warning
 //ignore: must_be_immutable
 class TreatmentsPanel extends StatelessWidget {
-  // final ReadingsScreenController? screenController;
-  final Function timerResetCallback;
   final Function onComplete;
   final TextEditingController insulinInjectionController;
   final TextEditingController noteTextController;
@@ -20,10 +18,8 @@ class TreatmentsPanel extends StatelessWidget {
 
   TreatmentsPanel({
     Key? key,
-    // required this.screenController,
     required this.insulinInjectionController,
     required this.noteTextController,
-    required this.timerResetCallback,
     required this.onComplete,
   }) : super(key: key);
 
@@ -139,7 +135,7 @@ class TreatmentsPanel extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
-                timerResetCallback();
+                // timerResetCallback();
               },
             ),
             IconButton(

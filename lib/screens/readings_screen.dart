@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,26 +18,17 @@ class ReadingsScreen extends StatefulWidget {
 }
 
 class _ReadingsScreenState extends State<ReadingsScreen> {
-  Timer? _refreshTimer;
-
   final _insulinInjectionController = TextEditingController();
   final _noteTextController = TextEditingController();
 
   @override
   void initState() {
-    _resetTimer();
+    // _resetTimer();
     super.initState();
     final readingsViewModel =
         Provider.of<ReadingsViewModel>(context, listen: false);
     readingsViewModel.getDataFromBackend();
-  }
-
-  void _resetTimer() {
-    _refreshTimer?.cancel();
-    _refreshTimer = Timer.periodic(
-      const Duration(seconds: 300),
-      (Timer t) => setState(() {}),
-    );
+    readingsViewModel.refresher();
   }
 
   @override
@@ -54,21 +43,17 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
         TreatmentsPanel(
           insulinInjectionController: _insulinInjectionController,
           noteTextController: _noteTextController,
-          timerResetCallback: _resetTimer,
           onComplete: () {
             setState(() {});
           },
         ),
-        const Expanded(
-          child: BgScatterPlot(),
-        ),
+        const BgScatterPlot(),
       ],
     );
   }
 
   @override
   void dispose() {
-    _refreshTimer?.cancel();
     _noteTextController.dispose();
     _insulinInjectionController.dispose();
     super.dispose();
