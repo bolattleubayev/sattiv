@@ -23,14 +23,16 @@ functionality of  adding and visualizing treatments (notes and insulin injection
 * Real-time monitoring of blood glucose
 * Adding/undoing treatments (bolus, notes)
 
-
 ## For developers
+### Done
+* MVVM architecture
+* (Multi-) Provider state management
+* Calibrations, Readings, and Treatments management
 
 ### To do
-* Implement bloc state management (so far it is badly written MVC)
+* Error/Exception management
 * Add notifications and sounds
 * Be smarter about data usage (right now all entries are queried from API, no local storage)
-* Add calibrations chart
 * Add "master" mode (aka Bluetooth connection)
 * Add forecasts (probably linear or low order polynomials should do fine)
 
