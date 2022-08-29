@@ -3,6 +3,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
 
 import '../view_models/calibrations_view_model.dart';
+import '../view_models/user_settings_view_model.dart';
 
 import '../model/calibration_plot_datapoint.dart';
 
@@ -34,14 +35,18 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CalibrationsViewModel>(
-      builder: (context, viewModel, child) {
-        return _buildDefaultScatterChart(viewModel);
+    return Consumer2<CalibrationsViewModel, UserSettingsViewModel>(
+      builder: (context, calibrationsViewModel, userSettingsViewModel, child) {
+        return _buildDefaultScatterChart(
+            calibrationsViewModel, userSettingsViewModel);
       },
     );
   }
 
-  SfCartesianChart _buildDefaultScatterChart(CalibrationsViewModel viewModel) {
+  SfCartesianChart _buildDefaultScatterChart(
+    CalibrationsViewModel calibrationsViewModel,
+    UserSettingsViewModel userSettingsViewModel,
+  ) {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       primaryXAxis: NumericAxis(
@@ -64,14 +69,17 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
       ),
       series: <ChartSeries>[
         // Renders scatter chart
-        ..._getScatterSeries(viewModel),
+        ..._getScatterSeries(calibrationsViewModel, userSettingsViewModel),
       ],
     );
   }
 
   List<ScatterSeries<dynamic, double>> _getScatterSeries(
-      CalibrationsViewModel viewModel) {
-    List<CalibrationPlotDatapoint> datapoints = viewModel.calibrations;
+    CalibrationsViewModel calibrationsViewModel,
+    UserSettingsViewModel userSettingsViewModel,
+  ) {
+    List<CalibrationPlotDatapoint> datapoints =
+        calibrationsViewModel.calibrations;
     ScatterSeries<CalibrationPlotDatapoint, double> _calibrations =
         ScatterSeries<CalibrationPlotDatapoint, double>(
             dataSource: datapoints,
@@ -85,11 +93,11 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
               ),
             ],
             xValueMapper: (CalibrationPlotDatapoint entry, _) =>
-                viewModel.userSettings.isMmolL
+                userSettingsViewModel.userSettings.isMmolL
                     ? entry.measuredValue / 18
                     : entry.measuredValue,
             yValueMapper: (CalibrationPlotDatapoint entry, _) =>
-                viewModel.userSettings.isMmolL
+                userSettingsViewModel.userSettings.isMmolL
                     ? entry.sensorValue / 18
                     : entry.sensorValue,
             markerSettings: const MarkerSettings(

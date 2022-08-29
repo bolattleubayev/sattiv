@@ -7,6 +7,7 @@ import '../widgets/delta_info_panel.dart';
 import '../widgets/time_interval_selection_panel.dart';
 import '../widgets/treatments_panel.dart';
 import '../view_models/readings_view_model.dart';
+import '../view_models/user_settings_view_model.dart';
 
 class ReadingsScreen extends StatefulWidget {
   const ReadingsScreen({
@@ -23,8 +24,11 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
 
   @override
   void initState() {
-    // _resetTimer();
     super.initState();
+    final userSettingsViewModel =
+        Provider.of<UserSettingsViewModel>(context, listen: false);
+    userSettingsViewModel.loadDataFromUserDefaults();
+
     final readingsViewModel =
         Provider.of<ReadingsViewModel>(context, listen: false);
     readingsViewModel.getDataFromBackend();
@@ -39,7 +43,6 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
         const DeltaInfoPanel(),
         const BgValueIndicator(),
         const TimeIntervalSelectionPanel(),
-        // TODO: take out text editing controllers and timer
         TreatmentsPanel(
           insulinInjectionController: _insulinInjectionController,
           noteTextController: _noteTextController,

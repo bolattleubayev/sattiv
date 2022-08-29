@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../widgets/calibrations_plot.dart';
 import '../view_models/calibrations_view_model.dart';
+import '../view_models/user_settings_view_model.dart';
 
 class CalibrationsScreen extends StatefulWidget {
   const CalibrationsScreen({Key? key}) : super(key: key);
@@ -18,6 +19,10 @@ class _CalibrationsScreenState extends State<CalibrationsScreen> {
     final calibrationsViewModel =
         Provider.of<CalibrationsViewModel>(context, listen: false);
     calibrationsViewModel.getCalibrations();
+
+    final userSettingsViewModel =
+        Provider.of<UserSettingsViewModel>(context, listen: false);
+    userSettingsViewModel.loadDataFromUserDefaults();
   }
 
   @override

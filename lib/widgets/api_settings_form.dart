@@ -12,11 +12,6 @@ class ApiSettingsForm extends StatefulWidget {
 }
 
 class _ApiSettingsFormState extends State<ApiSettingsForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
 
   final _baseUrlController = TextEditingController();

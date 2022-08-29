@@ -3,6 +3,8 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
 
 import '../view_models/readings_view_model.dart';
+import '../view_models/user_settings_view_model.dart';
+
 import '../model/treatment.dart';
 import '../model/entry.dart';
 import '../model/wave_data_point.dart';
@@ -57,17 +59,23 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ReadingsViewModel>(
-      builder: (context, viewModel, child) {
+    return Consumer2<ReadingsViewModel, UserSettingsViewModel>(
+      builder: (context, readingsViewModel, userSettingsViewModel, child) {
         return Expanded(
-          child: _buildDefaultScatterChart(viewModel),
+          child: _buildDefaultScatterChart(
+            readingsViewModel,
+            userSettingsViewModel,
+          ),
         );
       },
     );
   }
 
   /// Returns the default scatter chart.
-  SfCartesianChart _buildDefaultScatterChart(ReadingsViewModel viewModel) {
+  SfCartesianChart _buildDefaultScatterChart(
+    ReadingsViewModel readingsViewModel,
+    UserSettingsViewModel userSettingsViewModel,
+  ) {
     return SfCartesianChart(
       zoomPanBehavior: _zoomPanBehavior,
       plotAreaBorderWidth: 0,
@@ -85,17 +93,17 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
       ),
       tooltipBehavior: TooltipBehavior(enable: true),
       series: <ChartSeries>[
-        ..._getSplineSeries(viewModel),
-        ..._getScatterSeries(viewModel),
-        ..._getLines(viewModel),
+        ..._getSplineSeries(readingsViewModel),
+        ..._getScatterSeries(readingsViewModel, userSettingsViewModel),
+        ..._getLines(readingsViewModel, userSettingsViewModel),
       ],
     );
   }
 
   /// Returns the list of chart series which need to render on the spline chart.
   List<SplineSeries<WaveDataPoint, DateTime>> _getSplineSeries(
-      ReadingsViewModel viewModel) {
-    List<Treatment> insulinInjections = viewModel.treatments
+      ReadingsViewModel readingsViewModel) {
+    List<Treatment> insulinInjections = readingsViewModel.treatments
         .where((element) => element.eventType == "insulin")
         .toList();
     List<SplineSeries<WaveDataPoint, DateTime>> returnSeries = [];
@@ -121,28 +129,32 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   }
 
   List<ScatterSeries<dynamic, DateTime>> _getScatterSeries(
-      ReadingsViewModel viewModel) {
-    List<Entry> normalBgValues = viewModel.entries.where((element) {
-      if (viewModel.userSettings.isMmolL) {
-        return (element.sgv / 18 >= viewModel.userSettings.lowLimit &&
-            element.sgv / 18 <= viewModel.userSettings.highLimit);
+    ReadingsViewModel readingsViewModel,
+    UserSettingsViewModel userSettingsViewModel,
+  ) {
+    List<Entry> normalBgValues = readingsViewModel.entries.where((element) {
+      if (userSettingsViewModel.userSettings.isMmolL) {
+        return (element.sgv / 18 >=
+                userSettingsViewModel.userSettings.lowLimit &&
+            element.sgv / 18 <= userSettingsViewModel.userSettings.highLimit);
       }
-      return (element.sgv >= viewModel.userSettings.lowLimit &&
-          element.sgv <= viewModel.userSettings.highLimit);
+      return (element.sgv >= userSettingsViewModel.userSettings.lowLimit &&
+          element.sgv <= userSettingsViewModel.userSettings.highLimit);
     }).toList();
 
-    List<Entry> lowBgValues = viewModel.entries.where((element) {
-      if (viewModel.userSettings.isMmolL) {
-        return (element.sgv / 18 < viewModel.userSettings.lowLimit);
+    List<Entry> lowBgValues = readingsViewModel.entries.where((element) {
+      if (userSettingsViewModel.userSettings.isMmolL) {
+        return (element.sgv / 18 < userSettingsViewModel.userSettings.lowLimit);
       }
-      return (element.sgv < viewModel.userSettings.lowLimit);
+      return (element.sgv < userSettingsViewModel.userSettings.lowLimit);
     }).toList();
 
-    List<Entry> highBgValues = viewModel.entries.where((element) {
-      if (viewModel.userSettings.isMmolL) {
-        return (element.sgv / 18 > viewModel.userSettings.highLimit);
+    List<Entry> highBgValues = readingsViewModel.entries.where((element) {
+      if (userSettingsViewModel.userSettings.isMmolL) {
+        return (element.sgv / 18 >
+            userSettingsViewModel.userSettings.highLimit);
       }
-      return (element.sgv > viewModel.userSettings.highLimit);
+      return (element.sgv > userSettingsViewModel.userSettings.highLimit);
     }).toList();
 
     ScatterSeries<Entry, DateTime> normalBloodGlucoseValues =
@@ -152,7 +164,9 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.blue,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                viewModel.userSettings.isMmolL ? entry.sgv / 18 : entry.sgv,
+                userSettingsViewModel.userSettings.isMmolL
+                    ? entry.sgv / 18
+                    : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
@@ -166,7 +180,9 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.redAccent,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                viewModel.userSettings.isMmolL ? entry.sgv / 18 : entry.sgv,
+                userSettingsViewModel.userSettings.isMmolL
+                    ? entry.sgv / 18
+                    : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
@@ -180,14 +196,16 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.amber,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                viewModel.userSettings.isMmolL ? entry.sgv / 18 : entry.sgv,
+                userSettingsViewModel.userSettings.isMmolL
+                    ? entry.sgv / 18
+                    : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
             ),
             name: kUnits);
 
-    List<Treatment> notes = viewModel.treatments
+    List<Treatment> notes = readingsViewModel.treatments
         .where((element) => element.eventType == "note")
         .toList();
 
@@ -228,23 +246,25 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   /// The method returns line series to chart.
   List<LineSeries<_GlucoseLimits, DateTime>> _getLines(
-      ReadingsViewModel viewModel) {
+    ReadingsViewModel viewModel,
+    UserSettingsViewModel userSettingsViewModel,
+  ) {
     _highLimit = [
       _GlucoseLimits(
           DateTime.now()
               .subtract(Duration(minutes: ((viewModel.entries.length) * 5))),
-          viewModel.userSettings.highLimit),
+          userSettingsViewModel.userSettings.highLimit),
       _GlucoseLimits(DateTime.now().add(timePlottedAhead),
-          viewModel.userSettings.highLimit),
+          userSettingsViewModel.userSettings.highLimit),
     ];
 
     _lowLimit = [
       _GlucoseLimits(
           DateTime.now()
               .subtract(Duration(minutes: ((viewModel.entries.length) * 5))),
-          viewModel.userSettings.lowLimit),
+          userSettingsViewModel.userSettings.lowLimit),
       _GlucoseLimits(DateTime.now().add(timePlottedAhead),
-          viewModel.userSettings.lowLimit),
+          userSettingsViewModel.userSettings.lowLimit),
     ];
 
     return <LineSeries<_GlucoseLimits, DateTime>>[

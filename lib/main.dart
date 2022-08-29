@@ -9,6 +9,7 @@ import '../custom_theme.dart';
 import '../widgets/custom_app_bar.dart';
 import '../view_models/calibrations_view_model.dart';
 import '../view_models/readings_view_model.dart';
+import '../view_models/user_settings_view_model.dart';
 
 void main() => runApp(const MyApp());
 
@@ -19,10 +20,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<UserSettingsViewModel>(
+            create: (_) => UserSettingsViewModel()),
         ChangeNotifierProvider<CalibrationsViewModel>(
             create: (_) => CalibrationsViewModel()),
-        ChangeNotifierProvider<ReadingsViewModel>(
-            create: (_) => ReadingsViewModel()),
+        ChangeNotifierProxyProvider<UserSettingsViewModel, ReadingsViewModel>(
+          create: (_) => ReadingsViewModel(),
+          update: (_, userSettingsViewModel, readingsViewModel) =>
+              readingsViewModel!
+                ..updateDisplayInterval(userSettingsViewModel
+                    .userSettings.preferredDisplayInterval),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
