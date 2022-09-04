@@ -52,6 +52,7 @@ class DBViewModel with ChangeNotifier {
         .millisecondsSinceEpoch);
 
     // TODO: think of what to do with treatments
+    // probably leave like that as it is querying small amounts of data
     _treatments = await getTreatmentsFromApi(
       afterTime: DateTime.now().subtract(
         Duration(hours: _preferredDisplayInterval),

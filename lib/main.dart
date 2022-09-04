@@ -8,7 +8,6 @@ import '../screens/calibrations_screen.dart';
 import '../custom_theme.dart';
 import '../widgets/custom_app_bar.dart';
 import '../view_models/calibrations_view_model.dart';
-import '../view_models/readings_view_model.dart';
 import '../view_models/user_settings_view_model.dart';
 import '../view_models/db_view_model.dart';
 
@@ -77,7 +76,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       body: Center(
         child: <Widget>[
           const ReadingsScreen(),
-          // const DBConnectorScreen(),
           const CalibrationsScreen(),
           const SettingsScreen(),
         ].elementAt(_selectedIndex),
