@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/readings_view_model.dart';
+import '../view_models/db_view_model.dart';
 import '../model/entry.dart';
 import '../constants.dart';
 
@@ -64,7 +64,7 @@ class BgValueIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ReadingsViewModel>(
+    return Consumer<DBViewModel>(
       builder: (context, viewModel, child) {
         Entry entry = Entry.defaultValues();
         if (viewModel.entries.isNotEmpty) {

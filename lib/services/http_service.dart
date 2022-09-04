@@ -17,6 +17,34 @@ import '../model/measured_blood_glucose.dart';
 /// mbg and cal are on same timestamps
 /// https://satti-cgm.herokuapp.com/api/v1/entries/mbg.json?count=3
 
+/// DB-bound service
+
+Future<Entry> getLastEntry() async {
+  final prefs = await SharedPreferences.getInstance();
+  final _baseUrl = prefs.getString('baseUrl') ?? "";
+
+  final url = Uri.parse("$_baseUrl/api/v1/entries/sgv.json?count=1");
+
+  try {
+    final response = await http.get(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('status code ${response.statusCode}');
+    }
+
+    var responseData = json.decode(response.body);
+
+    return Entry.fromMap(responseData.first);
+  } on Exception catch (e, s) {
+    print("fail ${e}");
+  } on TypeError catch (e) {
+    print("fail ${e}");
+  }
+  // TODO: handle this case
+  return Entry.defaultValues();
+}
+
+/// Pre-DB services
 Future<List<CalibrationPlotDatapoint>> getCalibrationData(
     {int count = 5}) async {
   List<MeasuredBloodGlucose> mbgs =

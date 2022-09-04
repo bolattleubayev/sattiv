@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/readings_view_model.dart';
+import '../view_models/db_view_model.dart';
 import '../view_models/user_settings_view_model.dart';
 
 import '../model/treatment.dart';
@@ -59,7 +59,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ReadingsViewModel, UserSettingsViewModel>(
+    return Consumer2<DBViewModel, UserSettingsViewModel>(
       builder: (context, readingsViewModel, userSettingsViewModel, child) {
         return Expanded(
           child: _buildDefaultScatterChart(
@@ -73,7 +73,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   /// Returns the default scatter chart.
   SfCartesianChart _buildDefaultScatterChart(
-    ReadingsViewModel readingsViewModel,
+    DBViewModel readingsViewModel,
     UserSettingsViewModel userSettingsViewModel,
   ) {
     return SfCartesianChart(
@@ -102,7 +102,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   /// Returns the list of chart series which need to render on the spline chart.
   List<SplineSeries<WaveDataPoint, DateTime>> _getSplineSeries(
-      ReadingsViewModel readingsViewModel) {
+      DBViewModel readingsViewModel) {
     List<Treatment> insulinInjections = readingsViewModel.treatments
         .where((element) => element.eventType == "insulin")
         .toList();
@@ -129,7 +129,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   }
 
   List<ScatterSeries<dynamic, DateTime>> _getScatterSeries(
-    ReadingsViewModel readingsViewModel,
+    DBViewModel readingsViewModel,
     UserSettingsViewModel userSettingsViewModel,
   ) {
     List<Entry> normalBgValues = readingsViewModel.entries.where((element) {
@@ -246,7 +246,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
 
   /// The method returns line series to chart.
   List<LineSeries<_GlucoseLimits, DateTime>> _getLines(
-    ReadingsViewModel viewModel,
+    DBViewModel viewModel,
     UserSettingsViewModel userSettingsViewModel,
   ) {
     _highLimit = [

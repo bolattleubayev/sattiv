@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/readings_view_model.dart';
+import '../view_models/db_view_model.dart';
 
 class DeltaInfoPanel extends StatefulWidget {
   const DeltaInfoPanel({
@@ -39,7 +39,7 @@ class _DeltaInfoPanelState extends State<DeltaInfoPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ReadingsViewModel>(
+    return Consumer<DBViewModel>(
       builder: (context, viewModel, child) {
         List<dynamic> entries = viewModel.entries;
 

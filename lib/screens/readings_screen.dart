@@ -6,7 +6,7 @@ import '../widgets/bg_indicator.dart';
 import '../widgets/delta_info_panel.dart';
 import '../widgets/time_interval_selection_panel.dart';
 import '../widgets/treatments_panel.dart';
-import '../view_models/readings_view_model.dart';
+import '../view_models/db_view_model.dart';
 import '../view_models/user_settings_view_model.dart';
 
 class ReadingsScreen extends StatefulWidget {
@@ -29,10 +29,9 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
         Provider.of<UserSettingsViewModel>(context, listen: false);
     userSettingsViewModel.loadDataFromUserDefaults();
 
-    final readingsViewModel =
-        Provider.of<ReadingsViewModel>(context, listen: false);
-    readingsViewModel.getDataFromBackend();
-    readingsViewModel.refresher();
+    final dbViewModel = Provider.of<DBViewModel>(context, listen: false);
+    dbViewModel.initDB();
+    dbViewModel.refresher();
   }
 
   @override

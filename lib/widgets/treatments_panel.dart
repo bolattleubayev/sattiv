@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/readings_view_model.dart';
+import '../view_models/db_view_model.dart';
 import '../model/treatment.dart';
 
 import '../services/http_service.dart';
@@ -25,7 +25,7 @@ class TreatmentsPanel extends StatelessWidget {
 
   displayDialog(
       {required BuildContext context,
-      required ReadingsViewModel viewModel,
+      required DBViewModel viewModel,
       required String title,
       required String treatmentType,
       required TextEditingController controller,
@@ -127,7 +127,7 @@ class TreatmentsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ReadingsViewModel>(
+    return Consumer<DBViewModel>(
       builder: (context, viewModel, child) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
