@@ -42,9 +42,6 @@ class DatabaseService {
     );
   }
 
-  /// API
-  /// get entries
-
   /// CRUD
   Future<int> insertEntry(Entry entry) async {
     int result = await db.insert(

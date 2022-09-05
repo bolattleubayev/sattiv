@@ -13,9 +13,9 @@ import '../model/measured_blood_glucose.dart';
 /// sgv=(unfiltered/1000-intercept)*slope
 /// mbg contains actual measured values
 /// cal has intercept and slope
-/// https://satti-cgm.herokuapp.com/api/v1/entries/cal.json?count=3
+/// https://api-address.herokuapp.com/api/v1/entries/cal.json?count=3
 /// mbg and cal are on same timestamps
-/// https://satti-cgm.herokuapp.com/api/v1/entries/mbg.json?count=3
+/// https://api-address.herokuapp.com/api/v1/entries/mbg.json?count=3
 
 /// DB-bound service
 
@@ -134,40 +134,6 @@ Future<Entry> getAvgSugarValueWithin10MinRange({required int date}) async {
   }
 
   return Entry.defaultValues();
-}
-
-Future<List<Entry>> getEntriesFromApi({required DateTime afterTime}) async {
-  final prefs = await SharedPreferences.getInstance();
-  final _baseUrl = prefs.getString('baseUrl') ?? "";
-
-  String timeString = afterTime.toUtc().toIso8601String();
-  final url = Uri.parse(
-      "$_baseUrl/api/v1/entries/sgv.json?find[dateString][\$gte]=$timeString&count=288");
-
-  try {
-    final response = await http.get(url);
-
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-
-    var responseData = json.decode(response.body);
-    //Creating a list to store input data;
-    List<Entry> entries = [];
-    for (var singleEntry in responseData) {
-      Entry entry = Entry.fromMap(singleEntry);
-
-      //Adding entry to the list.
-      entries.add(entry);
-    }
-    return entries;
-  } on Exception catch (e, s) {
-    print("fail ${e}");
-  } on TypeError catch (e) {
-    print("fail ${e}");
-  }
-
-  return [];
 }
 
 Future<void> deleteTreatmentByCreationDate(
