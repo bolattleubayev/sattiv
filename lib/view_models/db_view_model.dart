@@ -2,45 +2,54 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../services/database_service.dart';
 import '../services/http_service.dart';
 
 import '../model/entry.dart';
 import '../model/treatment.dart';
 
-class ReadingsViewModel extends ChangeNotifier {
-  List<List<dynamic>> _backendData = [];
+final handler = DatabaseService();
 
+class DBViewModel with ChangeNotifier {
+  List<List<dynamic>> _backendData = [];
   List<List<dynamic>> get backendData => _backendData;
 
   List<Entry> _entries = [];
-
   List<Entry> get entries => _entries;
 
   List<Treatment> _treatments = [];
-
   List<Treatment> get treatments => _treatments;
 
   int _preferredDisplayInterval = 3;
 
   void updateDisplayInterval(int preferredDisplayInterval) {
     _preferredDisplayInterval = preferredDisplayInterval;
-    getDataFromBackend();
+    getDataFromDB();
   }
 
-  /// Timed self-refresh
+  initDB() async {
+    await handler.initDB();
+  }
+
   refresher() async {
     Timer.periodic(const Duration(seconds: 295), (t) async {
-      await getDataFromBackend();
+      await getDataFromDB();
     });
   }
 
-  /// Getters
-  getDataFromBackend() async {
-    _entries = await getEntriesFromApi(
-      afterTime: DateTime.now().subtract(
-        Duration(hours: _preferredDisplayInterval),
-      ),
-    );
+  getLastEntryFromAPI() async {
+    Entry lastEntry = await getLastEntry();
+    await handler.insertEntry(lastEntry);
+  }
+
+  getDataFromDB() async {
+    await getLastEntryFromAPI();
+    _entries = await handler.retrieveEntries(DateTime.now()
+        .subtract(
+          Duration(hours: _preferredDisplayInterval),
+        )
+        .toUtc()
+        .millisecondsSinceEpoch);
 
     _treatments = await getTreatmentsFromApi(
       afterTime: DateTime.now().subtract(
