@@ -7,8 +7,6 @@ import '../view_models/user_settings_view_model.dart';
 
 import '../model/calibration_plot_datapoint.dart';
 
-import '../constants.dart';
-
 class CalibrationsPlot extends StatefulWidget {
   const CalibrationsPlot({
     Key? key,
@@ -92,14 +90,16 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
                 opacity: 0.7,
               ),
             ],
-            xValueMapper: (CalibrationPlotDatapoint entry, _) =>
-                userSettingsViewModel.userSettings.isMmolL
-                    ? entry.measuredValue / 18
-                    : entry.measuredValue,
-            yValueMapper: (CalibrationPlotDatapoint entry, _) =>
-                userSettingsViewModel.userSettings.isMmolL
-                    ? entry.sensorValue / 18
-                    : entry.sensorValue,
+            xValueMapper:
+                (CalibrationPlotDatapoint calibrationPlotDatapoint, _) =>
+                    userSettingsViewModel.userSettings.isMmolL
+                        ? calibrationPlotDatapoint.measuredValue / 18
+                        : calibrationPlotDatapoint.measuredValue,
+            yValueMapper:
+                (CalibrationPlotDatapoint calibrationPlotDatapoint, _) =>
+                    userSettingsViewModel.userSettings.isMmolL
+                        ? calibrationPlotDatapoint.sensorValue / 18
+                        : calibrationPlotDatapoint.sensorValue,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
@@ -111,7 +111,9 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
               textStyle:
                   Theme.of(context).textTheme.button ?? const TextStyle(),
             ),
-            name: kUnits);
+            name: userSettingsViewModel.userSettings.isMmolL
+                ? 'mmol/L'
+                : 'mg/dL');
     return <ScatterSeries<dynamic, double>>[_calibrations];
   }
 }

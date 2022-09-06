@@ -5,14 +5,10 @@ import 'package:provider/provider.dart';
 
 import '../view_models/db_view_model.dart';
 import '../model/entry.dart';
-import '../constants.dart';
 
 class BgValueIndicator extends StatelessWidget {
-  // final Entry entry;
-
   const BgValueIndicator({
     Key? key,
-    // required this.entry,
   }) : super(key: key);
 
   Widget putArrow(Entry entry) {
@@ -66,10 +62,6 @@ class BgValueIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DBViewModel>(
       builder: (context, viewModel, child) {
-        Entry entry = Entry.defaultValues();
-        if (viewModel.entries.isNotEmpty) {
-          entry = viewModel.entries.first;
-        }
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -77,8 +69,10 @@ class BgValueIndicator extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                // TODO: units
-                (entry.sgv / 18).toStringAsFixed(1),
+                (viewModel.isMmolL
+                        ? viewModel.lastEntry.sgvMmolL
+                        : viewModel.lastEntry.sgv * 1.0)
+                    .toStringAsFixed(1),
                 style: Theme.of(context).textTheme.headline1?.copyWith(
                       fontWeight: FontWeight.normal,
                     ),
@@ -86,10 +80,10 @@ class BgValueIndicator extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    kUnits,
+                    (viewModel.isMmolL ? 'mmol/L' : 'mg/dL'),
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  putArrow(entry),
+                  putArrow(viewModel.lastEntry),
                 ],
               ),
             ],

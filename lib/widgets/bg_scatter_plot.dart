@@ -133,25 +133,25 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
     UserSettingsViewModel userSettingsViewModel,
   ) {
     List<Entry> normalBgValues = readingsViewModel.entries.where((element) {
-      if (userSettingsViewModel.userSettings.isMmolL) {
-        return (element.sgv / 18 >=
+      if (readingsViewModel.isMmolL) {
+        return (element.sgvMmolL >=
                 userSettingsViewModel.userSettings.lowLimit &&
-            element.sgv / 18 <= userSettingsViewModel.userSettings.highLimit);
+            element.sgvMmolL <= userSettingsViewModel.userSettings.highLimit);
       }
       return (element.sgv >= userSettingsViewModel.userSettings.lowLimit &&
           element.sgv <= userSettingsViewModel.userSettings.highLimit);
     }).toList();
 
     List<Entry> lowBgValues = readingsViewModel.entries.where((element) {
-      if (userSettingsViewModel.userSettings.isMmolL) {
-        return (element.sgv / 18 < userSettingsViewModel.userSettings.lowLimit);
+      if (readingsViewModel.isMmolL) {
+        return (element.sgvMmolL < userSettingsViewModel.userSettings.lowLimit);
       }
       return (element.sgv < userSettingsViewModel.userSettings.lowLimit);
     }).toList();
 
     List<Entry> highBgValues = readingsViewModel.entries.where((element) {
-      if (userSettingsViewModel.userSettings.isMmolL) {
-        return (element.sgv / 18 >
+      if (readingsViewModel.isMmolL) {
+        return (element.sgvMmolL >
             userSettingsViewModel.userSettings.highLimit);
       }
       return (element.sgv > userSettingsViewModel.userSettings.highLimit);
@@ -164,14 +164,14 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.blue,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                userSettingsViewModel.userSettings.isMmolL
-                    ? entry.sgv / 18
-                    : entry.sgv,
+                readingsViewModel.isMmolL ? entry.sgvMmolL : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
             ),
-            name: kUnits);
+            name: userSettingsViewModel.userSettings.isMmolL
+                ? 'mmol/L'
+                : 'mg/dL');
 
     ScatterSeries<Entry, DateTime> lowBloodGlucoseValues =
         ScatterSeries<Entry, DateTime>(
@@ -180,14 +180,14 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.redAccent,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                userSettingsViewModel.userSettings.isMmolL
-                    ? entry.sgv / 18
-                    : entry.sgv,
+                readingsViewModel.isMmolL ? entry.sgvMmolL : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
             ),
-            name: kUnits);
+            name: userSettingsViewModel.userSettings.isMmolL
+                ? 'mmol/L'
+                : 'mg/dL');
 
     ScatterSeries<Entry, DateTime> highBloodGlucoseValues =
         ScatterSeries<Entry, DateTime>(
@@ -196,14 +196,14 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
             color: Colors.amber,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
-                userSettingsViewModel.userSettings.isMmolL
-                    ? entry.sgv / 18
-                    : entry.sgv,
+                readingsViewModel.isMmolL ? entry.sgvMmolL : entry.sgv,
             markerSettings: const MarkerSettings(
               height: 10,
               width: 10,
             ),
-            name: kUnits);
+            name: userSettingsViewModel.userSettings.isMmolL
+                ? 'mmol/L'
+                : 'mg/dL');
 
     List<Treatment> notes = readingsViewModel.treatments
         .where((element) => element.eventType == "note")

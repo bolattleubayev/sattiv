@@ -22,8 +22,15 @@ class DBViewModel with ChangeNotifier {
 
   int _preferredDisplayInterval = 3;
 
-  void updateDisplayInterval(int preferredDisplayInterval) {
+  bool _isMmolL = true;
+  bool get isMmolL => _isMmolL;
+
+  Entry _lastEntry = Entry.defaultValues();
+  Entry get lastEntry => _lastEntry;
+
+  void updateUserSettings(int preferredDisplayInterval, bool isMmolL) {
     _preferredDisplayInterval = preferredDisplayInterval;
+    _isMmolL = isMmolL;
     getDataFromDB();
   }
 
@@ -38,8 +45,9 @@ class DBViewModel with ChangeNotifier {
   }
 
   getLastEntryFromAPI() async {
-    Entry lastEntry = await getLastEntry();
-    await handler.insertEntry(lastEntry);
+    Entry retrievedLastEntry = await getLastEntry();
+    _lastEntry = retrievedLastEntry;
+    await handler.insertEntry(retrievedLastEntry);
   }
 
   getDataFromDB() async {

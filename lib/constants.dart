@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import '../model/calibration.dart';
 import '../model/measured_blood_glucose.dart';
 
-/// Preferences
-
-const String kUnits = "mmol/L";
-
 /// Plot
 
 const double kMinimumPlotXAxis = 2.0;

@@ -48,13 +48,20 @@ class _DeltaInfoPanelState extends State<DeltaInfoPanel> {
           final Duration _lastReceived = DateTime.now().difference(
             DateTime.parse(entries[0].dateString),
           );
-          final int _difference = entries[0].sgv - entries[1].sgv;
-          String _diffString;
-          // TODO: units
-          if (_difference >= 0) {
-            _diffString = "+${(_difference / 18).toStringAsFixed(2)}";
+
+          double _difference = 0.0;
+          // Units conversion
+          if (viewModel.isMmolL) {
+            _difference = entries[0].sgvMmol - entries[1].sgvMmol;
           } else {
-            _diffString = (_difference / 18).toStringAsFixed(2);
+            _difference = (entries[0].sgv - entries[1].sgv) * 1.0;
+          }
+
+          String _diffString;
+          if (_difference >= 0) {
+            _diffString = "+${(_difference).toStringAsFixed(2)}";
+          } else {
+            _diffString = "-${(_difference).toStringAsFixed(2)}";
           }
 
           return Padding(

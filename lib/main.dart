@@ -29,8 +29,9 @@ class MyApp extends StatelessWidget {
           create: (_) => DBViewModel(),
           update: (_, userSettingsViewModel, readingsViewModel) =>
               readingsViewModel!
-                ..updateDisplayInterval(userSettingsViewModel
-                    .userSettings.preferredDisplayInterval),
+                ..updateUserSettings(
+                    userSettingsViewModel.userSettings.preferredDisplayInterval,
+                    userSettingsViewModel.userSettings.isMmolL),
         ),
       ],
       child: MaterialApp(

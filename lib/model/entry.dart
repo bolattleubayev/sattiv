@@ -7,6 +7,9 @@ class Entry {
   final int noise;
   final int filtered;
   final int unfiltered;
+  double get sgvMmolL {
+    return sgv / 18;
+  }
 
   Entry({
     required this.type,
