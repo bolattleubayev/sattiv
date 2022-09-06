@@ -135,6 +135,7 @@ class TreatmentsPanel extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
+                // TODO: refresh logic
                 // timerResetCallback();
               },
             ),

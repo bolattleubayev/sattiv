@@ -52,7 +52,7 @@ class _DeltaInfoPanelState extends State<DeltaInfoPanel> {
           double _difference = 0.0;
           // Units conversion
           if (viewModel.isMmolL) {
-            _difference = entries[0].sgvMmol - entries[1].sgvMmol;
+            _difference = entries[0].sgvMmolL - entries[1].sgvMmolL;
           } else {
             _difference = (entries[0].sgv - entries[1].sgv) * 1.0;
           }
