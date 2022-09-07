@@ -223,7 +223,7 @@ Future<List<Treatment>> getTreatmentsFromApi(
   return [];
 }
 
-void postTreatment(Treatment treatment) async {
+postTreatment(Treatment treatment) async {
   final prefs = await SharedPreferences.getInstance();
   final _baseUrl = prefs.getString('baseUrl') ?? "";
   final _sha1ApiSecret = prefs.getString('apiSecretSha1') ?? "";

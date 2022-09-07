@@ -1,10 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../view_models/db_view_model.dart';
 import '../../model/treatment.dart';
-
-// import '../../services/http_service.dart';
 
 import '../../constants.dart';
 
@@ -33,38 +32,20 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
-          return SimpleDialog(
+          return CupertinoAlertDialog(
             title: Text(
               title,
-              style: Theme.of(context).textTheme.bodyText1,
             ),
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
+            content: Column(
+              children: [
+                Column(
                   children: [
-                    TextButton(
-                      onPressed: () async {
-                        final TimeOfDay? timeOfDay = await showTimePicker(
-                          context: context,
-                          initialTime: _selectedTime,
-                          initialEntryMode: TimePickerEntryMode.dial,
-                        );
-                        if (timeOfDay != null && timeOfDay != _selectedTime) {
-                          setState(() {
-                            _selectedTime = timeOfDay;
-                          });
-                        }
-                      },
-                      child: Text(
-                        _selectedTime.format(context),
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    ),
-                    Expanded(
+                    Card(
                       child: TextField(
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white10,
                         ),
                         controller: controller,
                         keyboardType: treatmentType == "insulin"
@@ -73,50 +54,90 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                             : null,
                       ),
                     ),
+                    // SizedBox(
+                    //   height: 150,
+                    //   child: CupertinoDatePicker(
+                    //     mode: CupertinoDatePickerMode.time,
+                    //     onDateTimeChanged: (value) async {
+                    //       final TimeOfDay? timeOfDay = await showTimePicker(
+                    //         context: context,
+                    //         initialTime: _selectedTime,
+                    //         initialEntryMode: TimePickerEntryMode.dial,
+                    //       );
+                    //       if (timeOfDay != null &&
+                    //           timeOfDay != _selectedTime) {
+                    //         setState(() {
+                    //           _selectedTime = vlaue;
+                    //         });
+                    //       }
+                    //     },
+                    //     initialDateTime: DateTime.now(),
+                    //   ),
+                    // ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Icon(Icons.access_time_filled_outlined),
+                        TextButton(
+                          onPressed: () async {
+                            final TimeOfDay? timeOfDay = await showTimePicker(
+                              context: context,
+                              initialTime: _selectedTime,
+                              initialEntryMode: TimePickerEntryMode.input,
+                            );
+                            if (timeOfDay != null &&
+                                timeOfDay != _selectedTime) {
+                              setState(() {
+                                _selectedTime = timeOfDay;
+                              });
+                            }
+                          },
+                          child: Text(
+                            _selectedTime.format(context),
+                            style: Theme.of(context).textTheme.button,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (treatmentType == "insulin") {
-                        Treatment treatment = Treatment.insulinInjection(
-                          // TODO: handle null
-                          lastEntry: viewModel.entries.first,
-                          insulinAmount: controller.text,
-                          treatmentTime: timeOfDayToDateTime(_selectedTime),
-                          // TODO: units
-                          unt: "mmol/L",
-                        );
-                        viewModel.postTreatment(treatment);
-                      } else if (treatmentType == "note") {
-                        Treatment treatment = Treatment.note(
-                          // TODO: handle null
-                          lastEntry: viewModel.entries.first,
-                          note: controller.text,
-                          treatmentTime: timeOfDayToDateTime(_selectedTime),
-                          // TODO: units
-                          unt: "mmol/L",
-                        );
-                        viewModel.postTreatment(treatment);
-                      }
-                      controller.text = "";
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Save'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                ],
-              ),
+              ],
+            ),
+            actions: [
+              CupertinoDialogAction(
+                  child: const Text('Save'),
+                  onPressed: () {
+                    if (treatmentType == "insulin") {
+                      Treatment treatment = Treatment.insulinInjection(
+                        // TODO: handle null
+                        lastEntry: viewModel.entries.first,
+                        insulinAmount: controller.text,
+                        treatmentTime: timeOfDayToDateTime(_selectedTime),
+                        // TODO: units
+                        unt: "mmol/L",
+                      );
+                      viewModel.postNewTreatment(treatment);
+                    } else if (treatmentType == "note") {
+                      Treatment treatment = Treatment.note(
+                        // TODO: handle null
+                        lastEntry: viewModel.entries.first,
+                        note: controller.text,
+                        treatmentTime: timeOfDayToDateTime(_selectedTime),
+                        // TODO: units
+                        unt: "mmol/L",
+                      );
+                      viewModel.postNewTreatment(treatment);
+                    }
+                    controller.text = "";
+                    Navigator.pop(context);
+                  }),
+              CupertinoDialogAction(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
             ],
-            elevation: 10,
           );
         });
       },
@@ -140,7 +161,7 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
               icon: const Icon(Icons.undo),
               onPressed: () {
                 // TODO: add safety on removal
-                viewModel.undoLastTreatment();
+                viewModel.undoLastTreatmentInApi();
               },
             ),
             IconButton(

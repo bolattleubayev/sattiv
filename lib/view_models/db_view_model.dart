@@ -44,12 +44,12 @@ class DBViewModel with ChangeNotifier {
     });
   }
 
-  postTreatment(Treatment treatment) async {
+  postNewTreatment(Treatment treatment) async {
     await postTreatment(treatment);
     await getDataFromDB();
   }
 
-  undoLastTreatment() async {
+  undoLastTreatmentInApi() async {
     await undoLastTreatment();
     await getDataFromDB();
   }

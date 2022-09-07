@@ -18,6 +18,7 @@ dependencies:
   path:
   shared_preferences: ^2.0.12
   crypto: ^3.0.1
+  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
