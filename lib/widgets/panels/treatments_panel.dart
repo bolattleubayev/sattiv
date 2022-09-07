@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/db_view_model.dart';
-import '../model/treatment.dart';
+import '../../view_models/db_view_model.dart';
+import '../../model/treatment.dart';
 
-import '../services/http_service.dart';
+// import '../../services/http_service.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
-// TODO this warning
-//ignore: must_be_immutable
-class TreatmentsPanel extends StatelessWidget {
-  final Function onComplete;
-  final TextEditingController insulinInjectionController;
-  final TextEditingController noteTextController;
-  TimeOfDay _selectedTime = TimeOfDay.now();
-
-  TreatmentsPanel({
+class TreatmentsPanel extends StatefulWidget {
+  const TreatmentsPanel({
     Key? key,
-    required this.insulinInjectionController,
-    required this.noteTextController,
-    required this.onComplete,
   }) : super(key: key);
 
-  displayDialog(
-      {required BuildContext context,
-      required DBViewModel viewModel,
-      required String title,
-      required String treatmentType,
-      required TextEditingController controller,
-      required Function onComplete}) async {
+  @override
+  State<TreatmentsPanel> createState() => _TreatmentsPanelState();
+}
+
+class _TreatmentsPanelState extends State<TreatmentsPanel> {
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  final _insulinInjectionController = TextEditingController();
+  final _noteTextController = TextEditingController();
+
+  displayDialog({
+    required BuildContext context,
+    required DBViewModel viewModel,
+    required String title,
+    required String treatmentType,
+    required TextEditingController controller,
+  }) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -91,7 +90,7 @@ class TreatmentsPanel extends StatelessWidget {
                           // TODO: units
                           unt: "mmol/L",
                         );
-                        postTreatment(treatment);
+                        viewModel.postTreatment(treatment);
                       } else if (treatmentType == "note") {
                         Treatment treatment = Treatment.note(
                           // TODO: handle null
@@ -101,7 +100,7 @@ class TreatmentsPanel extends StatelessWidget {
                           // TODO: units
                           unt: "mmol/L",
                         );
-                        postTreatment(treatment);
+                        viewModel.postTreatment(treatment);
                       }
                       controller.text = "";
                       Navigator.pop(context);
@@ -122,7 +121,6 @@ class TreatmentsPanel extends StatelessWidget {
         });
       },
     );
-    onComplete();
   }
 
   @override
@@ -135,15 +133,14 @@ class TreatmentsPanel extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
-                // TODO: refresh logic
-                // timerResetCallback();
+                viewModel.getDataFromDB();
               },
             ),
             IconButton(
               icon: const Icon(Icons.undo),
               onPressed: () {
                 // TODO: add safety on removal
-                undoLastTreatment();
+                viewModel.undoLastTreatment();
               },
             ),
             IconButton(
@@ -154,8 +151,7 @@ class TreatmentsPanel extends StatelessWidget {
                   viewModel: viewModel,
                   treatmentType: "insulin",
                   title: 'Enter insulin amount',
-                  controller: insulinInjectionController,
-                  onComplete: onComplete,
+                  controller: _insulinInjectionController,
                 );
               },
             ),
@@ -167,8 +163,7 @@ class TreatmentsPanel extends StatelessWidget {
                   viewModel: viewModel,
                   treatmentType: "note",
                   title: 'Enter note',
-                  controller: noteTextController,
-                  onComplete: onComplete,
+                  controller: _noteTextController,
                 );
               },
             ),
@@ -176,5 +171,12 @@ class TreatmentsPanel extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _noteTextController.dispose();
+    _insulinInjectionController.dispose();
+    super.dispose();
   }
 }

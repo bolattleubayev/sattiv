@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/general_settings_form.dart';
+import '../widgets/forms/general_settings_form.dart';
 import '../widgets/custom_app_bar.dart';
 
 class GeneralSettingsScreen extends StatelessWidget {

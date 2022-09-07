@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/db_view_model.dart';
+import '../../view_models/db_view_model.dart';
 
 class DeltaInfoPanel extends StatefulWidget {
   const DeltaInfoPanel({
@@ -61,7 +61,7 @@ class _DeltaInfoPanelState extends State<DeltaInfoPanel> {
           if (_difference >= 0) {
             _diffString = "+${(_difference).toStringAsFixed(2)}";
           } else {
-            _diffString = "-${(_difference).toStringAsFixed(2)}";
+            _diffString = "${(_difference).toStringAsFixed(2)}";
           }
 
           return Padding(

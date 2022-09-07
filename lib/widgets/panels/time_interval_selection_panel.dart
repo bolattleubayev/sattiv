@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/user_settings_view_model.dart';
+import '../../view_models/user_settings_view_model.dart';
 
 class TimeIntervalSelectionPanel extends StatelessWidget {
   const TimeIntervalSelectionPanel({

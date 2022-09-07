@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/calibrations_plot.dart';
+import '../widgets/plots/calibrations_plot.dart';
 import '../view_models/calibrations_view_model.dart';
 import '../view_models/user_settings_view_model.dart';
 

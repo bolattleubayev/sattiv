@@ -44,12 +44,23 @@ class DBViewModel with ChangeNotifier {
     });
   }
 
+  postTreatment(Treatment treatment) async {
+    await postTreatment(treatment);
+    await getDataFromDB();
+  }
+
+  undoLastTreatment() async {
+    await undoLastTreatment();
+    await getDataFromDB();
+  }
+
   getLastEntryFromAPI() async {
     Entry retrievedLastEntry = await getLastEntry();
     _lastEntry = retrievedLastEntry;
     await handler.insertEntry(retrievedLastEntry);
   }
 
+  //TODO split entries and treatments query for all functions and logic
   getDataFromDB() async {
     await getLastEntryFromAPI();
     _entries = await handler.retrieveEntries(DateTime.now()

@@ -3,11 +3,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/db_view_model.dart';
-import '../model/entry.dart';
+import '../../view_models/db_view_model.dart';
+import '../../model/entry.dart';
 
-class BgValueIndicator extends StatelessWidget {
-  const BgValueIndicator({
+class BgValueIndicatorPanel extends StatelessWidget {
+  const BgValueIndicatorPanel({
     Key? key,
   }) : super(key: key);
 

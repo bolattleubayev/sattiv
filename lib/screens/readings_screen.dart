@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/bg_scatter_plot.dart';
-import '../widgets/bg_indicator.dart';
-import '../widgets/delta_info_panel.dart';
-import '../widgets/time_interval_selection_panel.dart';
-import '../widgets/treatments_panel.dart';
+import '../widgets/plots/bg_scatter_plot.dart';
+import '../widgets/panels/bg_indicator_panel.dart';
+import '../widgets/panels/delta_info_panel.dart';
+import '../widgets/panels/time_interval_selection_panel.dart';
+import '../widgets/panels/treatments_panel.dart';
 import '../view_models/db_view_model.dart';
 import '../view_models/user_settings_view_model.dart';
 
@@ -19,9 +19,6 @@ class ReadingsScreen extends StatefulWidget {
 }
 
 class _ReadingsScreenState extends State<ReadingsScreen> {
-  final _insulinInjectionController = TextEditingController();
-  final _noteTextController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -38,26 +35,13 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const DeltaInfoPanel(),
-        const BgValueIndicator(),
-        const TimeIntervalSelectionPanel(),
-        TreatmentsPanel(
-          insulinInjectionController: _insulinInjectionController,
-          noteTextController: _noteTextController,
-          onComplete: () {
-            setState(() {});
-          },
-        ),
-        const BgScatterPlot(),
+      children: const [
+        DeltaInfoPanel(),
+        BgValueIndicatorPanel(),
+        TimeIntervalSelectionPanel(),
+        TreatmentsPanel(),
+        BgScatterPlot(),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    _noteTextController.dispose();
-    _insulinInjectionController.dispose();
-    super.dispose();
   }
 }

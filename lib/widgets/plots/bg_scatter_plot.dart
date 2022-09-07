@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
 
-import '../view_models/db_view_model.dart';
-import '../view_models/user_settings_view_model.dart';
+import '../../view_models/db_view_model.dart';
+import '../../view_models/user_settings_view_model.dart';
 
-import '../model/treatment.dart';
-import '../model/entry.dart';
-import '../model/wave_data_point.dart';
-import '../model/humalog_wave.dart';
-import '../model/cartesian.dart';
-import '../constants.dart';
+import '../../model/treatment.dart';
+import '../../model/entry.dart';
+import '../../model/wave_data_point.dart';
+import '../../model/humalog_wave.dart';
+import '../../model/cartesian.dart';
+import '../../constants.dart';
 
 class BgScatterPlot extends StatefulWidget {
   const BgScatterPlot({

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/api_settings_form.dart';
+import '../widgets/forms/api_settings_form.dart';
 import '../widgets/custom_app_bar.dart';
 
 class ApiSettingsScreen extends StatelessWidget {
