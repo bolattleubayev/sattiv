@@ -28,13 +28,15 @@ functionality of  adding and visualizing treatments (notes and insulin injection
 * MVVM architecture
 * (Multi-) Provider state management
 * Calibrations, Readings, and Treatments management
+* Entries are queried by 1 item and stored in local DB to reduce data/API usage
 
 ### To do
 * Error/Exception management
 * Add notifications and sounds
-* Be smarter about data usage (right now all entries are queried from API, no local storage)
+* Be smarter about data usage (store calibrations locally)
 * Add "master" mode (aka Bluetooth connection)
 * Add forecasts (probably linear or low order polynomials should do fine)
+* Animations (transitions, updates)
 
 ### Compatibility
 
