@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../view_models/db_view_model.dart';
 import '../../model/treatment.dart';
-
-import '../../constants.dart';
 
 class TreatmentsPanel extends StatefulWidget {
   const TreatmentsPanel({
@@ -17,9 +16,29 @@ class TreatmentsPanel extends StatefulWidget {
 }
 
 class _TreatmentsPanelState extends State<TreatmentsPanel> {
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime _selectedTime = DateTime.now();
   final _insulinInjectionController = TextEditingController();
   final _noteTextController = TextEditingController();
+
+  void _showTimePickerDialog(Widget child) {
+    showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) => Container(
+              height: 216,
+              padding: const EdgeInsets.only(top: 6.0),
+              // The Bottom margin is provided to align the popup above the system navigation bar.
+              margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              // Provide a background color for the popup.
+              color: CupertinoColors.systemBackground.resolveFrom(context),
+              // Use a SafeArea widget to avoid system overlaps.
+              child: SafeArea(
+                top: false,
+                child: child,
+              ),
+            ));
+  }
 
   displayDialog({
     required BuildContext context,
@@ -54,51 +73,40 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                             : null,
                       ),
                     ),
-                    // SizedBox(
-                    //   height: 150,
-                    //   child: CupertinoDatePicker(
-                    //     mode: CupertinoDatePickerMode.time,
-                    //     onDateTimeChanged: (value) async {
-                    //       final TimeOfDay? timeOfDay = await showTimePicker(
-                    //         context: context,
-                    //         initialTime: _selectedTime,
-                    //         initialEntryMode: TimePickerEntryMode.dial,
-                    //       );
-                    //       if (timeOfDay != null &&
-                    //           timeOfDay != _selectedTime) {
-                    //         setState(() {
-                    //           _selectedTime = vlaue;
-                    //         });
-                    //       }
-                    //     },
-                    //     initialDateTime: DateTime.now(),
-                    //   ),
-                    // ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Icon(Icons.access_time_filled_outlined),
-                        TextButton(
-                          onPressed: () async {
-                            final TimeOfDay? timeOfDay = await showTimePicker(
-                              context: context,
-                              initialTime: _selectedTime,
-                              initialEntryMode: TimePickerEntryMode.input,
-                            );
-                            if (timeOfDay != null &&
-                                timeOfDay != _selectedTime) {
-                              setState(() {
-                                _selectedTime = timeOfDay;
-                              });
-                            }
-                          },
-                          child: Text(
-                            _selectedTime.format(context),
-                            style: Theme.of(context).textTheme.button,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const Icon(Icons.access_time_filled_outlined),
+                          CupertinoButton(
+                            onPressed: () => _showTimePickerDialog(
+                              CupertinoTheme(
+                                data: const CupertinoThemeData(
+                                  brightness: Brightness.dark,
+                                  textTheme: CupertinoTextThemeData(
+                                    dateTimePickerTextStyle: TextStyle(
+                                      color: CupertinoColors.white,
+                                    ),
+                                  ),
+                                ),
+                                child: CupertinoDatePicker(
+                                  mode: CupertinoDatePickerMode.time,
+                                  onDateTimeChanged: (value) async {
+                                    setState(() {
+                                      _selectedTime = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              DateFormat('kk:mm').format(_selectedTime),
+                              style: Theme.of(context).textTheme.button,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -111,9 +119,9 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                     if (treatmentType == "insulin") {
                       Treatment treatment = Treatment.insulinInjection(
                         // TODO: handle null
-                        lastEntry: viewModel.entries.first,
+                        lastEntry: viewModel.lastEntry,
                         insulinAmount: controller.text,
-                        treatmentTime: timeOfDayToDateTime(_selectedTime),
+                        treatmentTime: _selectedTime,
                         // TODO: units
                         unt: "mmol/L",
                       );
@@ -121,9 +129,9 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                     } else if (treatmentType == "note") {
                       Treatment treatment = Treatment.note(
                         // TODO: handle null
-                        lastEntry: viewModel.entries.first,
+                        lastEntry: viewModel.lastEntry,
                         note: controller.text,
-                        treatmentTime: timeOfDayToDateTime(_selectedTime),
+                        treatmentTime: _selectedTime,
                         // TODO: units
                         unt: "mmol/L",
                       );
