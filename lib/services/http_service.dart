@@ -44,7 +44,6 @@ Future<Entry> getLastEntry() async {
   return Entry.defaultValues();
 }
 
-/// Pre-DB services
 Future<List<CalibrationPlotDatapoint>> getCalibrationData(
     {int count = 5}) async {
   List<MeasuredBloodGlucose> mbgs =
@@ -65,6 +64,8 @@ Future<List<CalibrationPlotDatapoint>> getCalibrationData(
 
   return datapoints;
 }
+
+/// Pre-DB services
 
 Future<List<MeasuredBloodGlucose>> getLastMeasuredBloodGlucoseFromApi(
     {required int count}) async {
