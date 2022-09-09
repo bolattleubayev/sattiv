@@ -61,7 +61,6 @@ Future<List<CalibrationPlotDatapoint>> getCalibrationData(
 
     datapoints.add(newPoint);
   }
-
   return datapoints;
 }
 

@@ -46,7 +46,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
   @override
   void initState() {
     // TODO: Time plotted ahead
-    timePlottedAhead = const Duration(hours: 1);
+    timePlottedAhead = const Duration(minutes: 15);
     _zoomPanBehavior = ZoomPanBehavior(
       // Enables pinch zooming
       enablePinching: true,

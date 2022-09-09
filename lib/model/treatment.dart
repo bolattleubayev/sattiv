@@ -46,7 +46,6 @@ class Treatment {
         protein = 0.0,
         fat = 0.0,
         insulin = 0.0,
-        // TODO:
         units = unt,
         transmitterId = "",
         sensorCode = "",
@@ -66,7 +65,6 @@ class Treatment {
         protein = 0.0,
         fat = 0.0,
         insulin = (double.tryParse(insulinAmount) ?? 0.0),
-        // TODO:
         units = unt,
         transmitterId = "",
         sensorCode = "",

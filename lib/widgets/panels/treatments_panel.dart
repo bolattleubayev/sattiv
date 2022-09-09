@@ -122,8 +122,7 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                         lastEntry: viewModel.lastEntry,
                         insulinAmount: controller.text,
                         treatmentTime: _selectedTime,
-                        // TODO: units
-                        unt: "mmol/L",
+                        unt: viewModel.isMmolL ? "mmol/L" : "mg/dL",
                       );
                       viewModel.postNewTreatment(treatment);
                     } else if (treatmentType == "note") {
@@ -132,8 +131,7 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                         lastEntry: viewModel.lastEntry,
                         note: controller.text,
                         treatmentTime: _selectedTime,
-                        // TODO: units
-                        unt: "mmol/L",
+                        unt: viewModel.isMmolL ? "mmol/L" : "mg/dL",
                       );
                       viewModel.postNewTreatment(treatment);
                     }

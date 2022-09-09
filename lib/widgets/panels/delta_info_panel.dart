@@ -61,7 +61,7 @@ class _DeltaInfoPanelState extends State<DeltaInfoPanel> {
           if (_difference >= 0) {
             _diffString = "+${(_difference).toStringAsFixed(2)}";
           } else {
-            _diffString = "${(_difference).toStringAsFixed(2)}";
+            _diffString = (_difference).toStringAsFixed(2);
           }
 
           return Padding(

@@ -8,7 +8,7 @@ class CustomTheme {
       fontFamily: 'Montserrat',
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          primary: Colors.blue,
+          backgroundColor: Colors.blue,
         ),
       ),
       buttonTheme: ButtonThemeData(
