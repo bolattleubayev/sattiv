@@ -29,11 +29,11 @@ functionality of  adding and visualizing treatments (notes and insulin injection
 * (Multi-) Provider state management
 * Calibrations, Readings, and Treatments management
 * Entries are queried by 1 item and stored in local DB to reduce data/API usage
+* Error/Exception management
 
 ### To do
-* Error/Exception management
 * Add notifications and sounds
-* Be smarter about data usage (store calibrations locally)
+* Be smarter about data usage, query data 5 min after last entry
 * Add "master" mode (aka Bluetooth connection)
 * Add forecasts (probably linear or low order polynomials should do fine)
 * Animations (transitions, updates)

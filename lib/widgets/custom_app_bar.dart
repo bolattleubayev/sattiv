@@ -15,11 +15,11 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset(
-            'assets/images/Icon-120.png',
-            fit: BoxFit.scaleDown,
-            height: kToolbarHeight - 5,
-          ),
+          // Image.asset(
+          //   'assets/images/Icon-120.png',
+          //   fit: BoxFit.scaleDown,
+          //   height: kToolbarHeight - 5,
+          // ),
           const SizedBox(
             width: 8.0,
           ),

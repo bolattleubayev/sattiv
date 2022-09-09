@@ -105,7 +105,7 @@ class _CalibrationsPlotState extends State<CalibrationsPlot> {
               width: 10,
             ),
             dataLabelMapper: (CalibrationPlotDatapoint entry, _) =>
-                entry.dateString,
+                DateTime.parse(entry.dateString).toLocal().toString(),
             dataLabelSettings: DataLabelSettings(
               isVisible: true,
               textStyle:

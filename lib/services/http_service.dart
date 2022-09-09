@@ -25,22 +25,17 @@ Future<Entry> getLastEntry() async {
 
   final url = Uri.parse("$_baseUrl/api/v1/entries/sgv.json?count=1");
 
-  try {
-    final response = await http.get(url);
+  final response = await http.get(url);
 
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-
-    var responseData = json.decode(response.body);
-
-    return Entry.fromMap(responseData.first);
-  } on Exception catch (e, s) {
-    print("fail ${e}");
-  } on TypeError catch (e) {
-    print("fail ${e}");
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
   }
-  // TODO: handle this case
+
+  var responseData = json.decode(response.body);
+
+  return Entry.fromMap(responseData.first);
+
+  // TODO: handle this case if no response received
   return Entry.defaultValues();
 }
 
@@ -73,31 +68,23 @@ Future<List<MeasuredBloodGlucose>> getLastMeasuredBloodGlucoseFromApi(
 
   final url = Uri.parse("$_baseUrl/api/v1/entries/mbg.json?count=$count");
 
-  try {
-    final response = await http.get(url);
+  final response = await http.get(url);
 
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-
-    var responseData = json.decode(response.body);
-    //Creating a list to store input data;
-    List<MeasuredBloodGlucose> measuredBloodGlucoseReadings = [];
-    for (var singleMbg in responseData) {
-      MeasuredBloodGlucose measuredBloodGlucose =
-          MeasuredBloodGlucose.fromMap(singleMbg);
-
-      //Adding entry to the list.
-      measuredBloodGlucoseReadings.add(measuredBloodGlucose);
-    }
-    return measuredBloodGlucoseReadings;
-  } on Exception catch (e, s) {
-    print("fail ${e}");
-  } on TypeError catch (e) {
-    print("fail ${e}");
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
   }
 
-  return [];
+  var responseData = json.decode(response.body);
+  //Creating a list to store input data;
+  List<MeasuredBloodGlucose> measuredBloodGlucoseReadings = [];
+  for (var singleMbg in responseData) {
+    MeasuredBloodGlucose measuredBloodGlucose =
+        MeasuredBloodGlucose.fromMap(singleMbg);
+
+    //Adding entry to the list.
+    measuredBloodGlucoseReadings.add(measuredBloodGlucose);
+  }
+  return measuredBloodGlucoseReadings;
 }
 
 Future<Entry> getAvgSugarValueWithin10MinRange({required int date}) async {
@@ -115,25 +102,17 @@ Future<Entry> getAvgSugarValueWithin10MinRange({required int date}) async {
   final url = Uri.parse(
       "$_baseUrl/api/v1/entries/sgv.json?count=1&find[dateString][\$gte]=$tenMinDown&find[dateString][\$lte]=$oneMinUp");
 
-  try {
-    final response = await http.get(url);
+  final response = await http.get(url);
 
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-
-    var responseData = json.decode(response.body);
-
-    Entry correspondingEntry = Entry.fromMap(responseData.first);
-
-    return correspondingEntry;
-  } on Exception catch (e, s) {
-    print("fail ${e}");
-  } on TypeError catch (e) {
-    print("fail ${e}");
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
   }
 
-  return Entry.defaultValues();
+  var responseData = json.decode(response.body);
+
+  Entry correspondingEntry = Entry.fromMap(responseData.first);
+
+  return correspondingEntry;
 }
 
 Future<void> deleteTreatmentByCreationDate(
@@ -141,22 +120,16 @@ Future<void> deleteTreatmentByCreationDate(
   final deleteUrl = Uri.parse(
       "$baseUrl/api/v1/treatments.json?find[created_at][\$eq]=$createdAt");
 
-  try {
-    final response = await http.delete(
-      deleteUrl,
-      headers: <String, String>{
-        'API-SECRET': sha1ApiSecret,
-        'Content-Type': 'application/json',
-      },
-    );
+  final response = await http.delete(
+    deleteUrl,
+    headers: <String, String>{
+      'API-SECRET': sha1ApiSecret,
+      'Content-Type': 'application/json',
+    },
+  );
 
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-  } on Exception catch (e, s) {
-    print("fail 2 ${e}");
-  } on TypeError catch (e) {
-    print("fail 2 ${e}");
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
   }
 }
 
@@ -168,23 +141,17 @@ Future<void> undoLastTreatment() async {
 
   final url = Uri.parse("$_baseUrl/api/v1/treatments.json?count=1");
 
-  try {
-    final response = await http.get(url);
+  final response = await http.get(url);
 
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-
-    var responseData = json.decode(response.body);
-    //Creating a list to store input data;
-    String createdAt = responseData.first["created_at"];
-
-    await deleteTreatmentByCreationDate(_baseUrl, _sha1ApiSecret, createdAt);
-  } on Exception catch (e, s) {
-    print("fail 1 ${e}");
-  } on TypeError catch (e) {
-    print("fail 1 ${e}");
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
   }
+
+  var responseData = json.decode(response.body);
+  //Creating a list to store input data;
+  String createdAt = responseData.first["created_at"];
+
+  await deleteTreatmentByCreationDate(_baseUrl, _sha1ApiSecret, createdAt);
 }
 
 Future<List<Treatment>> getTreatmentsFromApi(
@@ -196,31 +163,23 @@ Future<List<Treatment>> getTreatmentsFromApi(
   final url = Uri.parse(
       "$_baseUrl/api/v1/treatments.json?find[created_at][\$gte]=$timeString");
 
-  try {
-    final response = await http.get(url);
+  final response = await http.get(url);
 
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-
-    var responseData = json.decode(response.body);
-    //Creating a list to store input data;
-    List<Treatment> treatments = [];
-    for (var singleEntry in responseData) {
-      Treatment treatment = Treatment.fromMap(singleEntry);
-
-      //Adding treatment to the list.
-      treatments.add(treatment);
-    }
-
-    return treatments;
-  } on Exception catch (e, s) {
-    print("fail ${e}");
-  } on TypeError catch (e) {
-    print("fail ${e}");
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
   }
 
-  return [];
+  var responseData = json.decode(response.body);
+  //Creating a list to store input data;
+  List<Treatment> treatments = [];
+  for (var singleEntry in responseData) {
+    Treatment treatment = Treatment.fromMap(singleEntry);
+
+    //Adding treatment to the list.
+    treatments.add(treatment);
+  }
+
+  return treatments;
 }
 
 postTreatment(Treatment treatment) async {
@@ -230,22 +189,16 @@ postTreatment(Treatment treatment) async {
 
   final url = Uri.parse("$_baseUrl/api/v1/treatments.json");
 
-  try {
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'API-SECRET': _sha1ApiSecret,
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(treatment.toMap()),
-    );
+  final response = await http.post(
+    url,
+    headers: <String, String>{
+      'API-SECRET': _sha1ApiSecret,
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(treatment.toMap()),
+  );
 
-    if (response.statusCode != 200) {
-      throw Exception('status code ${response.statusCode}');
-    }
-  } on Exception catch (e, s) {
-    print("fail ${e}");
-  } on TypeError catch (e) {
-    print("fail ${e}");
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
   }
 }

@@ -16,7 +16,7 @@ class TimeIntervalSelectionPanel extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               HourOption(
                 hours: 1,

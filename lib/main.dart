@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -53,9 +54,54 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   // bottom app bar controls
   int _selectedIndex = 0;
-  void _onItemTapped(int index) {
+
+  List<BottomNavigationBarItem> buildBottomNavBarItems() {
+    return [
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.bloodtype),
+        label: 'Readings',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.touch_app_rounded),
+        label: 'Calibrations',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.settings),
+        label: 'Settings',
+      ),
+    ];
+  }
+
+  final PageController _pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+
+  void _pageChanged(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  Widget _buildPageView() {
+    return PageView(
+      controller: _pageController,
+      onPageChanged: (index) {
+        _pageChanged(index);
+      },
+      children: const <Widget>[
+        ReadingsScreen(),
+        CalibrationsScreen(),
+        SettingsScreen(),
+      ],
+    );
+  }
+
+  void _bottomTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _pageController.animateToPage(index,
+          duration: const Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -71,34 +117,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: CupertinoColors.darkBackgroundGray,
       appBar: const CustomAppBar(
         title: "SattiV",
       ),
       body: Center(
-        child: <Widget>[
-          const ReadingsScreen(),
-          const CalibrationsScreen(),
-          const SettingsScreen(),
-        ].elementAt(_selectedIndex),
+        child: _buildPageView(),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bloodtype),
-            label: 'Readings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.touch_app_rounded),
-            label: 'Calibrations',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
         currentIndex: _selectedIndex,
+        onTap: (index) {
+          _bottomTapped(index);
+        },
+        items: buildBottomNavBarItems(),
         selectedItemColor: Theme.of(context).primaryColor,
-        onTap: _onItemTapped,
       ),
     );
   }
