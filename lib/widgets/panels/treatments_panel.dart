@@ -118,7 +118,6 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                   onPressed: () {
                     if (treatmentType == "insulin") {
                       Treatment treatment = Treatment.insulinInjection(
-                        // TODO: handle null
                         lastEntry: viewModel.lastEntry,
                         insulinAmount: controller.text,
                         treatmentTime: _selectedTime,
@@ -127,7 +126,6 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                       viewModel.postNewTreatment(treatment);
                     } else if (treatmentType == "note") {
                       Treatment treatment = Treatment.note(
-                        // TODO: handle null
                         lastEntry: viewModel.lastEntry,
                         note: controller.text,
                         treatmentTime: _selectedTime,

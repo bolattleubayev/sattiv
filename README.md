@@ -33,7 +33,6 @@ functionality of  adding and visualizing treatments (notes and insulin injection
 
 ### To do
 * Add notifications and sounds
-* Be smarter about data usage, query data 5 min after last entry
 * Add "master" mode (aka Bluetooth connection)
 * Add forecasts (probably linear or low order polynomials should do fine)
 * Animations (transitions, updates)

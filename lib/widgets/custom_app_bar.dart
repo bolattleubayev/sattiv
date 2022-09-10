@@ -20,12 +20,12 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
           //   fit: BoxFit.scaleDown,
           //   height: kToolbarHeight - 5,
           // ),
-          const SizedBox(
-            width: 8.0,
-          ),
+          // const SizedBox(
+          //   width: 8.0,
+          // ),
           Text(
             title,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.headline5,
           ),
         ],
       ),

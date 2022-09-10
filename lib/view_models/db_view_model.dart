@@ -28,41 +28,56 @@ class DBViewModel with ChangeNotifier {
   Entry _lastEntry = Entry.defaultValues();
   Entry get lastEntry => _lastEntry;
 
+  DateTime _fiveMinutesFromNow = DateTime.now();
+
+  /// Gets data from local DB if 5 minutes from last entry have passed.
+  getTheTimeToTriggerEvent() async {
+    _fiveMinutesFromNow = DateTime.parse(_lastEntry.dateString)
+        .toLocal()
+        .add(const Duration(minutes: 5));
+    if (DateTime.now().isAfter(_fiveMinutesFromNow)) {
+      getDataFromDB();
+    }
+  }
+
   void updateUserSettings(int preferredDisplayInterval, bool isMmolL) {
     _preferredDisplayInterval = preferredDisplayInterval;
     _isMmolL = isMmolL;
     getDataFromDB();
   }
 
+  /// Local DB initializer is called once in view.
   initDB() async {
     await handler.initDB();
-  }
-
-  refresher() async {
-    Timer.periodic(const Duration(seconds: 295), (t) async {
-      await getDataFromDB();
+    await _getLastEntryFromAPI();
+    Timer.periodic(const Duration(seconds: 60), (t) async {
+      await getTheTimeToTriggerEvent();
     });
   }
 
+  /// Posting last treatment in API and updating model.
   postNewTreatment(Treatment treatment) async {
     await postTreatment(treatment);
     await getDataFromDB();
   }
 
+  /// Undoing last treatment in API and updating model.
   undoLastTreatmentInApi() async {
     await undoLastTreatment();
     await getDataFromDB();
   }
 
-  getLastEntryFromAPI() async {
+  /// Helper function to sync API and local DB with one entry at a time.
+  _getLastEntryFromAPI() async {
     Entry retrievedLastEntry = await getLastEntry();
     _lastEntry = retrievedLastEntry;
     await handler.insertEntry(retrievedLastEntry);
   }
 
   //TODO split entries and treatments query for all functions and logic
+  /// Manages data retrieval from API and local DB.
   getDataFromDB() async {
-    await getLastEntryFromAPI();
+    await _getLastEntryFromAPI();
     _entries = await handler.retrieveEntries(DateTime.now()
         .subtract(
           Duration(hours: _preferredDisplayInterval),

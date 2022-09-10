@@ -33,10 +33,9 @@ Future<Entry> getLastEntry() async {
 
   var responseData = json.decode(response.body);
 
-  return Entry.fromMap(responseData.first);
-
-  // TODO: handle this case if no response received
-  return Entry.defaultValues();
+  Entry returnValue = Entry.defaultValues();
+  returnValue = Entry.fromMap(responseData.first);
+  return returnValue;
 }
 
 Future<List<CalibrationPlotDatapoint>> getCalibrationData(
