@@ -80,8 +80,12 @@ class DBViewModel with ChangeNotifier {
 
   /// Helper function to retrieve data from API on startup
   _initialDBFill() async {
+    // check if the last entry is before yesterday and take the least date
+    DateTime _lastEntryDate = DateTime.parse(_lastEntry.dateString).toLocal();
+    DateTime _dayAgo = DateTime.now().subtract(const Duration(days: 1));
+
     List<Entry> _retrievedEntries = await getEntriesFromApi(
-        afterTime: DateTime.now().subtract(const Duration(days: 1)));
+        afterTime: _lastEntryDate.isAfter(_dayAgo) ? _lastEntryDate : _dayAgo);
     for (var i = 0; i < _retrievedEntries.length; i++) {
       await handler.insertEntry(_retrievedEntries[i]);
     }
