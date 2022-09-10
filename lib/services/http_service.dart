@@ -19,6 +19,7 @@ import '../model/measured_blood_glucose.dart';
 
 /// DB-bound service
 
+/// Get the last entry from the API.
 Future<Entry> getLastEntry() async {
   final prefs = await SharedPreferences.getInstance();
   final _baseUrl = prefs.getString('baseUrl') ?? "";
@@ -36,6 +37,33 @@ Future<Entry> getLastEntry() async {
   Entry returnValue = Entry.defaultValues();
   returnValue = Entry.fromMap(responseData.first);
   return returnValue;
+}
+
+/// Get all entries after a certain date, limited to 288 (maximum number of entries in a day).
+Future<List<Entry>> getEntriesFromApi({required DateTime afterTime}) async {
+  final prefs = await SharedPreferences.getInstance();
+  final _baseUrl = prefs.getString('baseUrl') ?? "";
+
+  String timeString = afterTime.toUtc().toIso8601String();
+  final url = Uri.parse(
+      "$_baseUrl/api/v1/entries/sgv.json?find[dateString][\$gte]=$timeString&count=288");
+
+  final response = await http.get(url);
+
+  if (response.statusCode != 200) {
+    throw Exception('status code ${response.statusCode}');
+  }
+
+  var responseData = json.decode(response.body);
+  //Creating a list to store input data;
+  List<Entry> entries = [];
+  for (var singleEntry in responseData) {
+    Entry entry = Entry.fromMap(singleEntry);
+
+    //Adding entry to the list.
+    entries.add(entry);
+  }
+  return entries;
 }
 
 Future<List<CalibrationPlotDatapoint>> getCalibrationData(

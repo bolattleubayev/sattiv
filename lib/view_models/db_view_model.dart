@@ -48,8 +48,12 @@ class DBViewModel with ChangeNotifier {
 
   /// Local DB initializer is called once in view.
   initDB() async {
+    // Initialize local DB
     await handler.initDB();
     await _getLastEntryFromAPI();
+    // Load last day's data from API and fill local DB
+    await _initialDBFill();
+    // Check whether DB needs to be synced with API
     Timer.periodic(const Duration(seconds: 60), (t) async {
       await getTheTimeToTriggerEvent();
     });
@@ -72,6 +76,15 @@ class DBViewModel with ChangeNotifier {
     Entry retrievedLastEntry = await getLastEntry();
     _lastEntry = retrievedLastEntry;
     await handler.insertEntry(retrievedLastEntry);
+  }
+
+  /// Helper function to retrieve data from API on startup
+  _initialDBFill() async {
+    List<Entry> _retrievedEntries = await getEntriesFromApi(
+        afterTime: DateTime.now().subtract(const Duration(days: 1)));
+    for (var i = 0; i < _retrievedEntries.length; i++) {
+      await handler.insertEntry(_retrievedEntries[i]);
+    }
   }
 
   //TODO split entries and treatments query for all functions and logic
