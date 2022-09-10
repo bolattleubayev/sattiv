@@ -36,14 +36,14 @@ class DBViewModel with ChangeNotifier {
         .toLocal()
         .add(const Duration(minutes: 5));
     if (DateTime.now().isAfter(_fiveMinutesFromNow)) {
-      getDataFromDB();
+      await getDataFromDB();
     }
   }
 
-  void updateUserSettings(int preferredDisplayInterval, bool isMmolL) {
+  void updateUserSettings(int preferredDisplayInterval, bool isMmolL) async {
     _preferredDisplayInterval = preferredDisplayInterval;
     _isMmolL = isMmolL;
-    getDataFromDB();
+    await getDataFromDB();
   }
 
   /// Local DB initializer is called once in view.
@@ -57,6 +57,7 @@ class DBViewModel with ChangeNotifier {
     Timer.periodic(const Duration(seconds: 60), (t) async {
       await getTheTimeToTriggerEvent();
     });
+    await getDataFromDB();
   }
 
   /// Posting last treatment in API and updating model.

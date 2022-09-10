@@ -6,6 +6,7 @@ class CustomTheme {
     return ThemeData(
       brightness: Brightness.dark,
       scaffoldBackgroundColor: CupertinoColors.darkBackgroundGray,
+      bottomAppBarColor: CupertinoColors.systemFill,
       cardColor: CupertinoColors.systemFill,
       primaryColor: CupertinoColors.systemBlue,
       fontFamily: 'Montserrat',
