@@ -111,7 +111,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
     for (Treatment treatment in insulinInjections) {
       returnSeries.add(
         SplineSeries<WaveDataPoint, DateTime>(
-          color: Colors.green,
+          color: kInsulinColor,
           width: 4,
           dataSource: HumalogWave(
             magnitude: treatment.insulin,
@@ -161,7 +161,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         ScatterSeries<Entry, DateTime>(
             dataSource: normalBgValues,
             opacity: 1.0,
-            color: Colors.blue,
+            color: kNormalBGColor,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
                 readingsViewModel.isMmolL ? entry.sgvMmolL : entry.sgv,
@@ -177,7 +177,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         ScatterSeries<Entry, DateTime>(
             dataSource: lowBgValues,
             opacity: 1.0,
-            color: Colors.redAccent,
+            color: kLowBGColor,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
                 readingsViewModel.isMmolL ? entry.sgvMmolL : entry.sgv,
@@ -193,7 +193,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         ScatterSeries<Entry, DateTime>(
             dataSource: highBgValues,
             opacity: 1.0,
-            color: Colors.amber,
+            color: kHighBGColor,
             xValueMapper: (Entry entry, _) => DateTime.parse(entry.dateString),
             yValueMapper: (Entry entry, _) =>
                 readingsViewModel.isMmolL ? entry.sgvMmolL : entry.sgv,
@@ -215,7 +215,7 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
         ScatterSeries<Treatment, DateTime>(
           dataSource: notes,
           opacity: 1.0,
-          color: Colors.lightGreen,
+          color: kNotesColor,
           xValueMapper: (Treatment treatment, _) =>
               DateTime.parse(treatment.id),
           yValueMapper: (Treatment treatment, _) => treatment.glucose,
@@ -271,12 +271,12 @@ class _BgScatterPlotState extends State<BgScatterPlot> {
       _buildLineSeries(
         dataSource: _highLimit,
         name: 'High limit',
-        color: Colors.purple,
+        color: kLimitColor,
       ),
       _buildLineSeries(
         dataSource: _lowLimit,
         name: 'Low limit',
-        color: Colors.purple,
+        color: kLimitColor,
       ),
     ];
   }

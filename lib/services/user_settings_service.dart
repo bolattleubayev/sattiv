@@ -12,7 +12,7 @@ Future<UserSettings> getUserSettings() async {
   userSettings.lowLimit = (prefs.getDouble('lowLimit') ?? 3.9);
   userSettings.highLimit = (prefs.getDouble('highLimit') ?? 7.0);
   userSettings.preferredDisplayInterval =
-      (prefs.getInt('preferredDisplayInterval') ?? 1);
+      (prefs.getInt('preferredDisplayInterval') ?? 3);
 
   return userSettings;
 }

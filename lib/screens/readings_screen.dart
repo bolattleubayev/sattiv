@@ -47,7 +47,7 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
           Expanded(
             child: Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(8.0),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

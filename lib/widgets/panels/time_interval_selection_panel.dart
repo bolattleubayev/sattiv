@@ -13,48 +13,38 @@ class TimeIntervalSelectionPanel extends StatelessWidget {
     return Consumer<UserSettingsViewModel>(
       builder: (context, viewModel, child) {
         int groupValue = viewModel.getDisplayInterval();
-        return Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              HourOption(
-                hours: 1,
-                groupValue: groupValue,
-                onChanged: (int? value) {
-                  viewModel.setDisplayInterval(hours: value);
-                },
-              ),
-              HourOption(
-                hours: 3,
-                groupValue: groupValue,
-                onChanged: (int? value) {
-                  viewModel.setDisplayInterval(hours: value);
-                },
-              ),
-              HourOption(
-                hours: 6,
-                groupValue: groupValue,
-                onChanged: (int? value) {
-                  viewModel.setDisplayInterval(hours: value);
-                },
-              ),
-              HourOption(
-                hours: 12,
-                groupValue: groupValue,
-                onChanged: (int? value) {
-                  viewModel.setDisplayInterval(hours: value);
-                },
-              ),
-              HourOption(
-                hours: 24,
-                groupValue: groupValue,
-                onChanged: (int? value) {
-                  viewModel.setDisplayInterval(hours: value);
-                },
-              ),
-            ],
-          ),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            HourOption(
+              hours: 3,
+              groupValue: groupValue,
+              onChanged: (int? value) {
+                viewModel.setDisplayInterval(hours: value);
+              },
+            ),
+            HourOption(
+              hours: 6,
+              groupValue: groupValue,
+              onChanged: (int? value) {
+                viewModel.setDisplayInterval(hours: value);
+              },
+            ),
+            HourOption(
+              hours: 12,
+              groupValue: groupValue,
+              onChanged: (int? value) {
+                viewModel.setDisplayInterval(hours: value);
+              },
+            ),
+            HourOption(
+              hours: 24,
+              groupValue: groupValue,
+              onChanged: (int? value) {
+                viewModel.setDisplayInterval(hours: value);
+              },
+            ),
+          ],
         );
       },
     );

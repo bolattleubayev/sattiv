@@ -8,7 +8,8 @@ class CustomTheme {
       scaffoldBackgroundColor: CupertinoColors.darkBackgroundGray,
       bottomAppBarColor: CupertinoColors.systemFill,
       cardColor: CupertinoColors.systemFill,
-      primaryColor: CupertinoColors.systemBlue,
+      primaryColor:
+          const Color.fromRGBO(10, 132, 255, 1), // Dark iOS system blue,
       fontFamily: 'Montserrat',
       iconTheme: const IconThemeData(
         color: CupertinoColors.systemGrey6,
@@ -28,6 +29,7 @@ class CustomTheme {
         ),
         headline5: TextStyle(
           color: CupertinoColors.systemGrey6,
+          fontWeight: FontWeight.bold,
         ),
         headline6: TextStyle(
           color: CupertinoColors.systemGrey6,
@@ -41,14 +43,16 @@ class CustomTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: CupertinoColors.systemBlue,
+          backgroundColor:
+              const Color.fromRGBO(10, 132, 255, 1), // Dark iOS system blue,
         ),
       ),
       buttonTheme: ButtonThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),
-        buttonColor: CupertinoColors.systemBlue,
+        buttonColor:
+            const Color.fromRGBO(10, 132, 255, 1), // Dark iOS system blue
       ),
     );
   }

@@ -56,15 +56,27 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
               title,
             ),
             content: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Card(
                       child: TextField(
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              width: 0,
+                              style: BorderStyle.none,
+                            ),
+                          ),
                           filled: true,
-                          fillColor: Colors.white10,
+                          fillColor: const Color.fromRGBO(44, 44, 46, 1),
+                          hintText: treatmentType == "insulin"
+                              ? "Insulin amount"
+                              : "Note",
+                          isDense: true,
                         ),
                         controller: controller,
                         keyboardType: treatmentType == "insulin"
@@ -175,7 +187,7 @@ class _TreatmentsPanelState extends State<TreatmentsPanel> {
                   context: context,
                   viewModel: viewModel,
                   treatmentType: "insulin",
-                  title: 'Enter insulin amount',
+                  title: 'Enter treatment',
                   controller: _insulinInjectionController,
                 );
               },
