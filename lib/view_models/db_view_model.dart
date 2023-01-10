@@ -83,8 +83,9 @@ class DBViewModel with ChangeNotifier {
   _initialDBFill() async {
     // check if the last entry is before yesterday and take the least date
     Entry _lastDBentry = (await handler.retrieveLastEntry())[1];
-    DateTime _lastEntryDate = DateTime.parse(_lastDBentry.dateString).toLocal();
     DateTime _dayAgo = DateTime.now().subtract(const Duration(days: 1));
+    DateTime _lastEntryDate =
+        _dayAgo; //DateTime.parse(_lastDBentry.dateString).toLocal();
 
     List<Entry> _retrievedEntries = await getEntriesFromApi(
         afterTime: _lastEntryDate.isAfter(_dayAgo) ? _lastEntryDate : _dayAgo);
