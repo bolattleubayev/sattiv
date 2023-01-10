@@ -125,6 +125,16 @@ class DatabaseService {
     return result;
   }
 
+  Future<List<Entry>> retrieveLastEntry() async {
+    // Actually retrieves the one before last
+    // as last entry refresh is called more often
+    final List<Map<String, dynamic>> queryResult = //await db.query('entries');
+        await _entriesDB.rawQuery("""
+        SELECT * FROM entries ORDER BY date DESC LIMIT 2
+        """);
+    return queryResult.map((e) => Entry.fromMap(e)).toList();
+  }
+
   Future<List<Entry>> retrieveAllEntries() async {
     final List<Map<String, dynamic>> queryResult =
         await _entriesDB.query('entries');

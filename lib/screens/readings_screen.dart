@@ -30,9 +30,10 @@ class _ReadingsScreenState extends State<ReadingsScreen> {
     });
 
     final dbViewModel = Provider.of<DBViewModel>(context, listen: false);
-    dbViewModel.initDB().catchError((error) {
-      showCupertinoAlertDialog(context, 'Error', error.toString());
-    });
+    dbViewModel.initDB();
+    // .catchError((error) {
+    //   showCupertinoAlertDialog(context, 'Error', error.toString());
+    // });
   }
 
   @override
